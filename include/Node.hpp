@@ -5,14 +5,17 @@
 template <typename T>
 class Node
 {
-    T key;
-    std::unique_ptr<Node> left = nullptr;
-    std::unique_ptr<Node> right = nullptr;
-
-
+    T _key;
+    std::shared_ptr<Node<T>> _left = nullptr;
+    std::shared_ptr<Node<T>> _right = nullptr;
 public:
-    Node();
+    Node(T value);
+    ~Node();
 
+    T get_key() const;
+    std::shared_ptr<Node<T>> get_left() const;
+    std::shared_ptr<Node<T>> get_right() const;
+    void add_left(T value);
 };
 
 

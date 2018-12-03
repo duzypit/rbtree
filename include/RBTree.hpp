@@ -3,14 +3,15 @@
 #include "VTree.hpp"
 #include "Node.hpp"
 #include <iostream>
+#include <utility> //std::pair
 
 template<typename T>
 class RBTree
 {
 
-    friend class Viewer;
+    friend class TreeInspector;
 private:
-    std::shared_ptr<Node<T>> head = nullptr;
+    std::shared_ptr<Node<T>> _head = nullptr;
 public:
     RBTree() {};
     RBTree(T value)
@@ -18,20 +19,47 @@ public:
         insert(value);
     }
     ~RBTree() {};
+
+    //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
     void remove(T r);
+
     void destroy_tree();
-    Node<T>* search(T value);
+
+    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value)
+    {
+        std::shared_ptr<Node<T>> parent = nullptr;
+        std::shared_ptr<Node<T>> needle = _head;
+
+        while(  (needle != nullptr) &&
+                (needle -> get_key() != value))
+        {
+            parent = needle;
+
+            if(value > needle -> get_key())
+            {
+
+                needle = needle -> get_right();
+            }
+
+            if(value < needle -> get_key())
+            {
+                needle = needle -> get_left();
+            }
+        }
+
+        return std::make_pair(parent, needle);
+    }
 
     void insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
-        if(parent == nullptr && head == nullptr)
+        if(parent == nullptr && _head == nullptr)
         {
-            head = std::make_shared<Node<T>> (value);
+           _head = std::make_shared<Node<T>> (value);
         } else
         {
             if (parent == nullptr)
             {
-                parent = head;
+                parent = _head;
             }
 
             if (value < parent -> get_key())
@@ -60,6 +88,7 @@ public:
         }
     }
 };
+
 #endif
 
 

@@ -13,8 +13,17 @@ int main()
     t.insert(5);
     t.insert(15);
 
-    auto result = t.search(10);
+    int search_val = 55;
+    auto result = t.search(search_val);
+
+    std::cout << "search for elem "<< search_val <<", results:" << std::endl;
+    if (result.first != nullptr)
+        std::cout << "parent pointer points to: " << result.first -> get_key() << std::endl;
+    if (result.second != nullptr)
+        std::cout << "needle pointer points to: " << result.second -> get_key() << std::endl;
+
 
     TreeInspector inspector(t);
-
+    t.remove(10);
+    inspector.print_tree(t._head);
 }

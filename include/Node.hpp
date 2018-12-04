@@ -41,6 +41,16 @@ public:
         _right = std::make_shared<Node<T>>(value);
     }
 
+    void null_left()
+    {
+        _left = nullptr;
+    }
+
+    void null_right()
+    {
+        _right = nullptr;
+    }
+
 };
 
 

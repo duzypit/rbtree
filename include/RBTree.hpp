@@ -12,6 +12,12 @@ class RBTree
     friend class TreeInspector;
 private:
     std::shared_ptr<Node<T>> _head = nullptr;
+
+    bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
+    {
+        return (parent -> get_left() == child);
+    }
+
 public:
     RBTree() {};
     RBTree(T value)
@@ -21,7 +27,92 @@ public:
     ~RBTree() {};
 
     //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
-    void remove(T r);
+    void remove(T key)
+    {
+        auto result = this -> search(key);
+
+        if(result.second != nullptr)
+        {
+            //we have a valid result
+            //case 1. deleting node that has no subtree
+
+            if (result.second -> get_left() == nullptr && result.second -> get_right() == nullptr)
+            {
+
+                if(node_is_left_child(result.first, result.second))
+                {
+                    result.first -> null_left();
+                } else
+                {
+                    result.first -> null_right();
+                }
+
+                //if deletion node is the root node
+                if (_head == result.second) _head = nullptr;
+
+            }
+
+            //case 2. deleting a node that has one subtree
+            //left subtree
+
+            if(result.second -> get_left() != nullptr && result.second -> get_right == nullptr)
+            {
+
+                if (node_is_left_child(result.first, result.second))
+                {
+                    if(result.second == _head)
+                    {
+                        _head = result.second -> get_left();
+                    } else
+                    {
+                        result.first -> add_left(result.second -> get_left());
+                    }
+                } else
+                {
+                    if(result.second == _head)
+                    {
+                        _head = result.second -> get_left();
+                    } else
+                    {
+                        result.first -> add_right(result.second -> get_left());
+                    }
+                }
+
+            }
+
+
+            //right subtree
+            if(result.second -> get_left() == nullptr && result.second -> get_right != nullptr)
+            {
+
+                if (node_is_left_child(result.first, result.second))
+                {
+                    if(result.second == _head)
+                    {
+                        _head = result.second -> get_right();
+                    } else
+                    {
+                        result.first -> add_left(result.second -> get_right());
+                    }
+
+                } else
+                {
+                    if(result.second == _head)
+                    {
+                        _head = result.second -> get_right();
+                    } else
+                    {
+                        result.first -> add_right(result.second -> get_right());
+                    }
+                }
+
+            }
+
+            //case 3. deletion node has two subtrees
+
+        }
+
+    }
 
     void destroy_tree();
 
@@ -30,22 +121,21 @@ public:
         std::shared_ptr<Node<T>> parent = nullptr;
         std::shared_ptr<Node<T>> needle = _head;
 
-        while(  (needle != nullptr) &&
-                (needle -> get_key() != value))
-        {
+        do {
             parent = needle;
 
             if(value > needle -> get_key())
             {
 
                 needle = needle -> get_right();
-            }
-
-            if(value < needle -> get_key())
+            } else if(value < needle -> get_key())
             {
                 needle = needle -> get_left();
             }
-        }
+
+            if (needle == nullptr) parent = nullptr;
+
+       } while((needle != nullptr) && (needle -> get_key() != value));
 
         return std::make_pair(parent, needle);
     }

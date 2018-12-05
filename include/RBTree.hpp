@@ -119,7 +119,8 @@ public:
                     //parent
                     result.first ->replace_right(successor.second);
                     successor.second -> replace_left(to_delete -> get_left());
-                    successor.second -> replace_right( to_delete -> get_right());
+                    successor.second -> replace_right(to_delete -> get_right());
+                    successor.first -> replace_left(nullptr);
                     to_delete -> replace_left(nullptr);
                     to_delete -> replace_right(nullptr);
 

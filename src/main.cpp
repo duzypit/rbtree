@@ -8,7 +8,7 @@ int main()
     t.insert(6);
     t.insert(2);
     t.insert(1);
-    t.insert(11);
+    t.insert(9);
     t.insert(8);
     t.insert(15);
     t.insert(13);
@@ -32,7 +32,7 @@ int main()
 
     std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
 
-    t.remove(20);
+    t.remove(9);
 
     TreeInspector inspector(t);
 }

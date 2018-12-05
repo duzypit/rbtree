@@ -26,19 +26,22 @@ public:
     }
     ~RBTree() {};
 
+    //debug
+    std::shared_ptr<Node<T>> get_head() const
+    {
+        return _head;
+    }
+
     //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
     void remove(T key)
     {
         auto result = this -> search(key);
-
         if(result.second != nullptr)
         {
             //we have a valid result
             //case 1. deleting node that has no subtree
-
             if (result.second -> get_left() == nullptr && result.second -> get_right() == nullptr)
             {
-
                 if(node_is_left_child(result.first, result.second))
                 {
                     result.first -> null_left();
@@ -46,18 +49,13 @@ public:
                 {
                     result.first -> null_right();
                 }
-
                 //if deletion node is the root node
                 if (_head == result.second) _head = nullptr;
-
             }
-
             //case 2. deleting a node that has one subtree
             //left subtree
-
-            if(result.second -> get_left() != nullptr && result.second -> get_right == nullptr)
+            if(result.second -> get_left() != nullptr && result.second -> get_right() == nullptr)
             {
-
                 if (node_is_left_child(result.first, result.second))
                 {
                     if(result.second == _head)
@@ -65,7 +63,7 @@ public:
                         _head = result.second -> get_left();
                     } else
                     {
-                        result.first -> add_left(result.second -> get_left());
+                        result.first -> replace_left(result.second -> get_left());
                     }
                 } else
                 {
@@ -74,17 +72,13 @@ public:
                         _head = result.second -> get_left();
                     } else
                     {
-                        result.first -> add_right(result.second -> get_left());
+                        result.first -> replace_right(result.second -> get_left());
                     }
                 }
-
             }
-
-
             //right subtree
-            if(result.second -> get_left() == nullptr && result.second -> get_right != nullptr)
+            if(result.second -> get_left() == nullptr && result.second -> get_right() != nullptr)
             {
-
                 if (node_is_left_child(result.first, result.second))
                 {
                     if(result.second == _head)
@@ -92,9 +86,8 @@ public:
                         _head = result.second -> get_right();
                     } else
                     {
-                        result.first -> add_left(result.second -> get_right());
+                        result.first -> replace_left(result.second -> get_right());
                     }
-
                 } else
                 {
                     if(result.second == _head)
@@ -102,21 +95,63 @@ public:
                         _head = result.second -> get_right();
                     } else
                     {
-                        result.first -> add_right(result.second -> get_right());
+                        result.first -> replace_right(result.second -> get_right());
                     }
                 }
 
             }
 
             //case 3. deletion node has two subtrees
+            if(result.second -> get_left() != nullptr && result.second -> get_right() != nullptr)
+            {
+                //find successor node in the node with the minimum value in the right subtree
+                auto right_subtree_head = result.second -> get_right();
+
+                auto successor = find_min_val_node(right_subtree_head);
+
+                if(node_is_left_child(result.first, result.second))
+                {
+                   //true
+                } else
+                {
+                    //right childi
+                    auto to_delete = result.second;
+                    //parent
+                    result.first ->replace_right(successor.second);
+                    successor.second -> replace_left(to_delete -> get_left());
+                    successor.second -> replace_right( to_delete -> get_right());
+                    to_delete -> replace_left(nullptr);
+                    to_delete -> replace_right(nullptr);
+
+                    result.second.reset();
+                    to_delete.reset();
+
+                }
+            }
 
         }
 
     }
 
-    void destroy_tree();
+    //void destroy_tree();
+    //
+    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent) const
+    {
 
-    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value)
+        std::shared_ptr<Node<T>> needle = nullptr;
+
+        needle = parent -> get_left();
+
+        while(needle->get_left() != nullptr)
+        {
+            parent = needle;
+            needle = needle -> get_left();
+        };
+
+        return std::make_pair(parent, parent->get_left());
+    }
+
+    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value) const
     {
         std::shared_ptr<Node<T>> parent = nullptr;
         std::shared_ptr<Node<T>> needle = _head;

@@ -5,13 +5,15 @@ int main()
 {
 
     RBTree<int> t;
-    t.insert(10);
+    t.insert(6);
+    t.insert(2);
+    t.insert(1);
     t.insert(11);
-    t.insert(20);
-    t.insert(21);
-    t.insert(3);
-    t.insert(5);
+    t.insert(8);
     t.insert(15);
+    t.insert(13);
+    t.insert(11);
+    t.insert(18);
 
     int search_val = 55;
     auto result = t.search(search_val);
@@ -23,7 +25,14 @@ int main()
         std::cout << "needle pointer points to: " << result.second -> get_key() << std::endl;
 
 
+//    t.remove(10);
+//    inspector.print_tree(t._head);
+//
+    auto min = t.find_min_val_node(t.get_head());
+
+    std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
+
+    t.remove(20);
+
     TreeInspector inspector(t);
-    t.remove(10);
-    inspector.print_tree(t._head);
 }

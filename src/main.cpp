@@ -1,10 +1,11 @@
-#include "../include/RBTree.hpp"
+#include "../include/BSTree.hpp"
 #include "../include/TreeInspector.hpp"
 
 int main()
 {
 
-    RBTree<int> t;
+    // create tree
+    BSTree<int> t;
     t.insert(6);
     t.insert(2);
     t.insert(1);
@@ -15,7 +16,10 @@ int main()
     t.insert(11);
     t.insert(18);
 
-    int search_val = 55;
+    TreeInspector inspector(t);
+
+    //test: search
+    int search_val = 15;
     auto result = t.search(search_val);
 
     std::cout << "search for elem "<< search_val <<", results:" << std::endl;
@@ -24,15 +28,12 @@ int main()
     if (result.second != nullptr)
         std::cout << "needle pointer points to: " << result.second -> get_key() << std::endl;
 
-
-//    t.remove(10);
-//    inspector.print_tree(t._head);
-//
-    auto min = t.find_min_val_node(t.get_head());
+    //test: search for min val
+    auto min = t.find_min_val_node(result.second);
 
     std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
 
-    t.remove(9);
+    t.remove(15);
 
-    TreeInspector inspector(t);
+    inspector.print_tree(t);
 }

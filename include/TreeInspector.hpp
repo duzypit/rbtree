@@ -1,6 +1,6 @@
 #ifndef __VIEWER_HPP__
 #define __VIEWER_HPP__
-#include "RBTree.hpp"
+#include "BSTree.hpp"
 #include <string>
 
 class TreeInspector
@@ -16,9 +16,15 @@ public:
     TreeInspector(){};
 
     template<typename T>
-    TreeInspector(RBTree<T> t)
+    TreeInspector(BSTree<T> t)
     {
-        print_tree(t._head);
+        print_tree(t.get_head());
+    }
+
+    template<typename T>
+    void print_tree(BSTree<T> t)
+    {
+        print_tree(t.get_head());
     }
 
     template<typename T>

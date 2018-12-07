@@ -5,6 +5,7 @@
 template <typename T>
 class Node
 {
+protected:
     T _key;
     std::shared_ptr<Node<T>> _left = nullptr;
     std::shared_ptr<Node<T>> _right = nullptr;
@@ -46,7 +47,6 @@ public:
         _left = ptr;
     }
 
-
     void replace_right(std::shared_ptr<Node<T>> ptr)
     {
         _right = ptr;
@@ -61,10 +61,5 @@ public:
     {
         _right = nullptr;
     }
-
 };
-
-
-
-
 #endif

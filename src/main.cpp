@@ -1,23 +1,30 @@
 #include "../include/BSTree.hpp"
 #include "../include/TreeInspector.hpp"
+#include "../include/RBTree.hpp"
+#include "../include/Node.hpp"
+#include "../include/RBNode.hpp"
 
 int main()
 {
 
     // create tree
     BSTree<int> t;
-    t.insert(6);
-    t.insert(2);
-    t.insert(1);
-    t.insert(9);
-    t.insert(8);
-    t.insert(15);
-    t.insert(13);
-    t.insert(11);
-    t.insert(18);
+    t.insert(50);
+    t.insert(30);
+    t.insert(70);
+    t.insert(10);
+    t.insert(5);
+    t.insert(7);
+    t.insert(40);
+    t.insert(39);
+    t.insert(38);
+    t.insert(45);
+    t.insert(80);
+    t.insert(90);
+    t.insert(75);
 
     TreeInspector inspector(t);
-
+/*
     //test: search
     int search_val = 15;
     auto result = t.search(search_val);
@@ -31,9 +38,22 @@ int main()
     //test: search for min val
     auto min = t.find_min_val_node(result.second);
 
-    std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
+    if (min.second != nullptr)
+        std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
 
-    t.remove(15);
-
+    t.remove(7);
     inspector.print_tree(t);
+    t.remove(10);
+    inspector.print_tree(t);
+    t.remove(70);
+    inspector.print_tree(t);
+    std::cout << "remove 50" << std::endl;
+    t.remove(50);
+    inspector.print_tree(t);
+*/
+
+    std::cout << "RBTree" << std::endl;
+
+    RBTree<int> rbt;
+
 }

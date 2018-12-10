@@ -7,10 +7,9 @@
 template<typename T>
 class BSTree
 {
-
-    friend class TreeInspector;
-protected:
+private:
     std::shared_ptr<Node<T>> _head = nullptr;
+protected:
 
     bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
     {
@@ -25,7 +24,6 @@ public:
     }
     ~BSTree() {};
 
-    //debug
     std::shared_ptr<Node<T>> get_head() const
     {
         return _head;
@@ -196,13 +194,15 @@ public:
         return std::make_pair(parent, needle);
     }
 
-    void insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
+    std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
         if(parent == nullptr && _head == nullptr)
         {
            _head = std::make_shared<Node<T>> (value);
+           return _head;
         } else
         {
+            std::shared_ptr<Node<T>> current;
             if (parent == nullptr)
             {
                 parent = _head;
@@ -213,24 +213,26 @@ public:
                 if (parent -> get_left() == nullptr)
                 {
                     parent -> add_left(value);
+                    current = parent -> get_left();
                 } else
                 {
                     this -> insert(value, parent -> get_left());
+
                 }
             } else
             {
 
                 if (parent -> get_right() == nullptr)
                 {
-
                     parent -> add_right(value);
+                    current = parent -> get_right();
                 } else
                 {
 
                     this -> insert(value, parent -> get_right());
                 }
             }
-
+            return current;
         }
     }
 };

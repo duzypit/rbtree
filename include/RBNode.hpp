@@ -1,8 +1,9 @@
 #ifndef __RBNODE_HPP__
 #define __RBNODE_HPP__
+#include "Node.hpp"
 
 template <typename T>
-class RBNode : public Node
+class RBNode : public Node<T>
 {
     enum class Color {black = false, red = true};
 

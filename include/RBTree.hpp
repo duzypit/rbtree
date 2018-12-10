@@ -2,6 +2,7 @@
 #define __RBTREE_HPP__
 #include <iostream>
 #include <utility> //std::pair
+#include "BSTree.hpp"
 
 /*
  * Every node is either red or black.
@@ -13,19 +14,38 @@
  * */
 
 template<typename T>
-class RBTree : public BSTree
+class RBTree : public BSTree<T>
 {
 
+private:
+    std::shared_ptr<Node<T>> _head = nullptr;
+
+
 public:
-     void insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
+    RBTree() {};
+    RBTree(T value)
+    {
+        insert(value);
+    }
+    ~RBTree() {};
+
+    std::shared_ptr<Node<T>> get_head() const
+    {
+        return this->_head;
+    }
+
+
+   std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
         if(parent == nullptr && _head == nullptr)
         {
            _head = std::make_shared<Node<T>> (value);
            _head -> flip_color();
+           return _head;
 
         } else
         {
+            std::shared_ptr<Node<T>> current;
             if (parent == nullptr)
             {
                 parent = _head;
@@ -36,6 +56,7 @@ public:
                 if (parent -> get_left() == nullptr)
                 {
                     parent -> add_left(value);
+                    current = parent -> get_left();
                 } else
                 {
                     this -> insert(value, parent -> get_left());
@@ -47,23 +68,50 @@ public:
                 {
 
                     parent -> add_right(value);
-                } else
+                    current = parent -> get_right();
+               } else
                 {
 
                     this -> insert(value, parent -> get_right());
                 }
+
+                //default node color is red
+                //if parent is red recolor
+
+                //if(parent->is_red())
+                //{
+                //    current -> flip_color();
+                //}
             }
 
-        // if the node is root recolor to black
-        //
+        //set parrent to current node
+        current -> set_parent(parent);
 
-        //parent is red?
+        //nullptr if current is head
+        if(parent != nullptr && parent -> is_red())
+        {
+        // case 1. current's uncle, is red
+            if(parent->get_parent()->get_right()->is_red())
+            {
+                //recolor parent
+                parent->flip_color();
+                //grandpa
+                parent->get_parent()->flip_color();
+                //uncle
+                parent->get_parent()->get_right()->flip_color();
+            }
+
+            //case 2. current's uncle is black, current is the right child
         //
         //rotate left
         //
         //rotate right
         }
+
+        return current;
+        }
     }
+
 };
 
 #endif

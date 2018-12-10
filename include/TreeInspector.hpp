@@ -11,7 +11,8 @@ class TreeInspector
     void _pop(){
         _prefix.erase(_prefix.length() - 4);
     }
-
+    std::string _red = std::string("\033[0;31m");
+    std::string _reset = std::string("\033[0m");
 public:
     TreeInspector(){};
 
@@ -35,7 +36,17 @@ public:
             std::cout << "No tree data to print!" << std::endl;
         }
 
-        std::cout << "(" << node -> get_key() << ")" << std::endl;
+        std::cout << "(";
+        if (node -> is_red())
+        {
+            std::cout << _red << node -> get_key() << _reset;
+
+        } else
+        {
+            std::cout << node -> get_key();
+        }
+        std::cout << ")" << std::endl;
+
         if(node -> get_right())
         {
             if(node -> get_left() == nullptr)

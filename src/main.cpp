@@ -6,7 +6,7 @@
 
 int main()
 {
-
+/*
     // create tree
     BSTree<int> t;
     t.insert(50);
@@ -24,7 +24,7 @@ int main()
     t.insert(75);
 
     TreeInspector inspector(t);
-/*
+
     //test: search
     int search_val = 15;
     auto result = t.search(search_val);
@@ -50,10 +50,16 @@ int main()
     std::cout << "remove 50" << std::endl;
     t.remove(50);
     inspector.print_tree(t);
-*/
 
+*/
     std::cout << "RBTree" << std::endl;
 
     RBTree<int> rbt;
+    rbt.insert(40);
+    rbt.insert(20);
+//    rbt.insert(10);
+//    rbt.insert(30);
+
+    TreeInspector inspector(rbt);
 
 }

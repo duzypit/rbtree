@@ -9,9 +9,10 @@ class BSTree
 {
 
     friend class TreeInspector;
-protected:
-    std::shared_ptr<Node<T>> _head = nullptr;
 
+private:
+    std::shared_ptr<Node<T>> _head = nullptr;
+protected:
     bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
     {
         return (parent -> get_left() == child);
@@ -24,12 +25,6 @@ public:
         insert(value);
     }
     ~BSTree() {};
-
-    //debug
-    std::shared_ptr<Node<T>> get_head() const
-    {
-        return _head;
-    }
 
     //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
     void remove(T key)
@@ -196,13 +191,15 @@ public:
         return std::make_pair(parent, needle);
     }
 
-    void insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
+    std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
         if(parent == nullptr && _head == nullptr)
         {
            _head = std::make_shared<Node<T>> (value);
+           return _head;
         } else
         {
+            std::shared_ptr<Node<T>> current;
             if (parent == nullptr)
             {
                 parent = _head;
@@ -213,24 +210,26 @@ public:
                 if (parent -> get_left() == nullptr)
                 {
                     parent -> add_left(value);
+                    current = parent -> get_left();
                 } else
                 {
                     this -> insert(value, parent -> get_left());
+
                 }
             } else
             {
 
                 if (parent -> get_right() == nullptr)
                 {
-
                     parent -> add_right(value);
+                    current = parent -> get_right();
                 } else
                 {
 
                     this -> insert(value, parent -> get_right());
                 }
             }
-
+            return current;
         }
     }
 };

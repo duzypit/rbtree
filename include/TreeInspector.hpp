@@ -47,40 +47,28 @@ public:
             }
             std::cout << ")" << std::endl;
 
+
             if(node -> get_right())
             {
                 if(node -> get_left() == nullptr)
                 {
-                    std::cout << _red << node -> get_key() << _reset;
-
-                } else
-                {
-                    std::cout << node -> get_key();
-                }
-                std::cout << ")" << std::endl;
-
-                if(node -> get_right())
-                {
-                    if(node -> get_left() == nullptr)
-                    {
-                        std::cout << _prefix << " └───";
-                        _prefix.append(std::string("    "));
-                    } else
-                    {
-                        std::cout << _prefix << " ├───";
-                        _prefix.append(std::string(" |  "));
-                    }
-                    this -> print_tree(node -> get_right());
-                    _pop();
-                }
-
-                if (node -> get_left())
-                {
                     std::cout << _prefix << " └───";
                     _prefix.append(std::string("    "));
-                    this->print_tree(node->get_left());
-                    _pop();
+                } else
+                {
+                    std::cout << _prefix << " ├───";
+                    _prefix.append(std::string(" |  "));
                 }
+                this -> print_tree(node -> get_right());
+                _pop();
+            }
+
+            if (node -> get_left())
+            {
+                std::cout << _prefix << " └───";
+                _prefix.append(std::string("    "));
+                this->print_tree(node->get_left());
+                _pop();
             }
         }
     }

@@ -10,9 +10,9 @@ class BSTree
 
 friend class TreeInspector;
 
-private:
-    std::shared_ptr<Node<T>> _head = nullptr;
 protected:
+    std::shared_ptr<Node<T>> _head = nullptr;
+
     bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
     {
         return (parent -> get_left() == child);

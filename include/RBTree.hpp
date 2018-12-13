@@ -54,6 +54,7 @@ public:
                 {
                     parent -> add_left(value);
                     current = parent -> get_left();
+                    current ->set_parent(parent);
                 } else
                 {
                     this -> insert(value, parent -> get_left());
@@ -66,6 +67,7 @@ public:
 
                     parent -> add_right(value);
                     current = parent -> get_right();
+                    current -> set_parent(parent);
                } else
                 {
 
@@ -74,6 +76,8 @@ public:
 
            }
 
+
+            this->reorganize(current);
 /*
         //set parrent to current node
         if (current != nullptr)
@@ -116,6 +120,26 @@ public:
         }
     }
 
+    void reorganize(std::shared_ptr<Node<T>> current)
+    {
+        auto father = current -> get_parent();
+        if(father -> get_parent() != nullptr)
+        {
+
+            auto grandfather = father -> get_parent();
+            //applied whe two consecutive red nodes are created
+            //case 1 left-left
+            if((current == father -> get_left() && father == grandfather -> get_left() && grandfather -> get_parent() -> get_left() == grandfather ) &&
+                (current -> is_red() && father -> is_red()) )
+            {
+                father -> flip_color();
+                father -> set_parent(grandfather -> get_parent());
+                father -> get_parent() -> replace_left(father);
+                father -> replace_right(grandfather);
+                grandfather -> set_parent(father);
+            }
+        }
+    }
 };
 
 #endif

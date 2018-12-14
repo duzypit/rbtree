@@ -55,10 +55,16 @@ int main()
 
     RBTree<int> rbt;
     rbt.insert(40);
+//    TreeInspector inspector(rbt);
     rbt.insert(20);
-    rbt.insert(60);
-    rbt.insert(10);
-//    rbt.insert(30);
+//    inspector.print_tree(rbt);
+
+//    rbt.insert(60);
+//    inspector.print_tree(rbt);
+
+//    rbt.insert(10);
+//    inspector.print_tree(rbt);
+    rbt.insert(30);
 
     TreeInspector inspector(rbt);
 

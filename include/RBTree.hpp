@@ -24,25 +24,19 @@ public:
         insert(value);
     }
     ~RBTree() {};
-/*
-    std::shared_ptr<Node<T>> get_head() const
-    {
-        return this->_head;
-    }
 
-*/
     std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
+
+        std::shared_ptr<Node<T>> current = nullptr;
+
         if(parent == nullptr && this->_head == nullptr)
         {
             //current node is head - repaint it to black
-           this->_head = std::make_shared<Node<T>> (value);
-           this->_head -> flip_color();
-           return this->_head;
+            current = this->_head = std::make_shared<Node<T>> (value);
 
         } else
         {
-            std::shared_ptr<Node<T>> current = nullptr;
             if (parent == nullptr)
             {
                 parent = this->_head;
@@ -76,67 +70,119 @@ public:
 
            }
 
-
-            this->reorganize(current);
-/*
-        //set parrent to current node
-        if (current != nullptr)
-            current -> set_parent(parent);
-
-        //nullptr if current is head
-        if(parent != nullptr && parent -> is_red())
-        {
-        // case 1. current's uncle, is red
-            if(parent->get_parent() != nullptr)
-            {
-                if(parent->get_parent()->get_right() != nullptr)
-                {
-                    if(parent->get_parent()->get_right()->is_red())
-                    {
-                        //recolor parent
-                        parent->flip_color();
-                        //grandpa
-                        parent->get_parent()->flip_color();
-                        //uncle
-                        parent->get_parent()->get_right()->flip_color();
-                    }
-                }
-            }
-
-            //case 2. current's uncle is black, current is the right child
-        //
-        //rotate left
-        //
-        //rotate right
-
-        //default node color is red
-        //if parent is red recolor - but first check for rotations
-        if(parent->is_red())
-            current -> flip_color();
-
         }
-*/
+
+        this->reorganize(current);
         return current;
-        }
     }
 
     void reorganize(std::shared_ptr<Node<T>> current)
     {
-        auto father = current -> get_parent();
-        if(father -> get_parent() != nullptr)
+        if (current != nullptr)
         {
 
-            auto grandfather = father -> get_parent();
-            //applied whe two consecutive red nodes are created
-            //case 1 left-left
-            if((current == father -> get_left() && father == grandfather -> get_left() && grandfather -> get_parent() -> get_left() == grandfather ) &&
-                (current -> is_red() && father -> is_red()) )
+            // case 0 - current is the root
+            if (current == this->_head && current -> is_red())
             {
-                father -> flip_color();
-                father -> set_parent(grandfather -> get_parent());
-                father -> get_parent() -> replace_left(father);
-                father -> replace_right(grandfather);
-                grandfather -> set_parent(father);
+                current -> flip_color();
+            }
+
+            auto father = current -> get_parent();
+            if (father == nullptr)
+                return;
+
+            //case 0.5 - if a node has red children reverse all 3 colors
+/*            if( (father -> get_left() != nullptr && father -> get_right() != nullptr))
+            {
+                if(father -> get_left() -> is_red() && father -> get_right() -> is_red())
+                {
+                   father -> get_left() -> flip_color();
+                   father -> get_right() -> flip_color();
+                }
+            }
+*/
+            if(father -> get_parent() != nullptr && current == father -> get_left() && father -> is_red())
+            {
+
+                auto grandfather = father -> get_parent();
+
+                //does uncle exists?
+                std::shared_ptr<Node<T>> uncle = nullptr;
+
+                if (grandfather -> get_right() != nullptr)
+                {
+                    auto uncle = grandfather -> get_right();
+
+                }
+            /*
+            1:  Both father and uncle are Red -- color father and uncle
+            Black, color grandparent Red. Point X to grandparent and
+            check new situation.
+            */
+                if( (father != nullptr && uncle != nullptr) &&
+                        (father->is_red() && uncle -> is_red()) )
+                {
+                    father->flip_color();
+                    uncle->flip_color();
+                    if(!grandfather->is_red())
+                        grandfather->flip_color();
+                    this->reorganize(grandfather);
+                }
+    //https://www.csee.umbc.edu/courses/pub/www/undergraduate/courses/341/fall13/section3/lectures/10-Red-Black-Trees.pdf
+                if( (father != nullptr && uncle != nullptr) &&
+                         (father->is_red() && !uncle->is_red()) )
+                {
+
+                    /*
+                    2 (zig-zag): Parent is Red, but uncle is Black. X and its parent
+                    are opposite type children -- color grandparent Red, color X
+                    Black, rotate left(right) on parent, rotate right(left) on grandparent
+                    */
+
+                    if (father == grandfather->get_left() && current == father -> get_right())
+                    {
+                        current->set_parent(grandfather->get_parent());
+                        current -> replace_left(father);
+                        current -> replace_right(grandfather);
+
+                        father -> null_right();
+                        father -> set_parent(current);
+
+                        grandfather -> set_parent(current);
+                        grandfather -> null_left();
+
+                        current -> flip_color();
+                        grandfather -> flip_color();
+
+                        if( grandfather == this -> _head)
+                            this -> _head = current;
+                    }
+
+                    /*
+                    3 (zig-zig):  Parent is Red, but uncle is Black. X and its parent
+                    are both left (right) children -- color parent Black, color
+                    grandparent Red, rotateright(left) on grandparent
+                    */
+                    if (father == grandfather->get_left() && current == father -> get_left())
+                    {
+                        father -> set_parent(grandfather -> get_parent());
+                        if(father->get_left() != nullptr)
+                        {
+                            grandfather -> replace_left(father -> get_left());
+                        }
+
+                        father -> replace_right(grandfather);
+
+                        if(father -> is_red())
+                            father -> flip_color();
+
+                        if(!grandfather ->is_red())
+                            grandfather -> flip_color();
+                    }
+
+                }
+
+
             }
         }
     }

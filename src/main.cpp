@@ -59,12 +59,14 @@ int main()
     rbt.insert(20);
 //    inspector.print_tree(rbt);
 
-//    rbt.insert(60);
+    rbt.insert(60);
 //    inspector.print_tree(rbt);
-
-//    rbt.insert(10);
+    rbt.insert(10);
 //    inspector.print_tree(rbt);
     rbt.insert(30);
+    rbt.insert(25);
+    rbt.insert(2);
+    rbt.insert(1);
 
     TreeInspector inspector(rbt);
 

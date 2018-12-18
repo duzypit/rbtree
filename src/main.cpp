@@ -2,6 +2,7 @@
 #include "../include/TreeInspector.hpp"
 #include "../include/RBTree.hpp"
 #include "../include/Node.hpp"
+#include <vector>
 
 int main()
 {
@@ -54,19 +55,15 @@ int main()
     std::cout << "RBTree" << std::endl;
 
     RBTree<int> rbt;
-    rbt.insert(40);
-//    TreeInspector inspector(rbt);
-    rbt.insert(20);
-//    inspector.print_tree(rbt);
 
-    rbt.insert(60);
-//    inspector.print_tree(rbt);
-    rbt.insert(10);
-//    inspector.print_tree(rbt);
-    rbt.insert(30);
-    rbt.insert(25);
-    rbt.insert(2);
-    rbt.insert(1);
+    //firs test case
+    //std::vector<int> data = {40,20, 60,80,50,10,30,25,2,1};
+    std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8/*, 9*/};
+//    std::vector<int> data = {10, 5, 0};
+    for( auto &a : data)
+    {
+        rbt.insert(a);
+    }
 
     TreeInspector inspector(rbt);
 

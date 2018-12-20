@@ -58,7 +58,7 @@ int main()
 
     //firs test case
     //std::vector<int> data = {40,20, 60,80,50,10,30,25,2,1};
-    std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8/*, 9*/};
+    std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8, 9};
 //    std::vector<int> data = {10, 5, 0};
     for( auto &a : data)
     {

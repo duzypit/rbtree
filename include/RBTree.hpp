@@ -138,6 +138,7 @@ public:
                     uncle->flip_color();
                     if(!grandfather->is_red())
                         grandfather->flip_color();
+                    //check from grandfather if we need reorganize further
                     this->reorganize(grandfather);
                 }
 
@@ -150,7 +151,7 @@ public:
                     Black, rotate left(right) on parent, rotate right(left) on grandparent
                     */
 
-                    if (father == grandfather->get_left() && current == father -> get_right() && !uncle_is_left)
+                    if (father == grandfather->get_left() && current == father -> get_right())
                     {
                         current -> set_parent(grandfather->get_parent());
                         current -> replace_left(father);
@@ -165,26 +166,27 @@ public:
                         current -> flip_color();
                         grandfather -> flip_color();
 
-                        if( grandfather == this -> _head)
-                            this -> _head = current;
+                        //if( grandfather == this -> _head)
+                        //    this -> _head = current;
                     }
 
                     //2 (zig-zag): mirror case
-                    if (father == grandfather -> get_right() && current == father -> get_left() && !uncle_is_left)
+                    if (father == grandfather -> get_right() && current == father -> get_left())
                     {
                         current -> set_parent(grandfather -> get_parent());
-                        //current -> replace_right(father);
-                        current -> replace_left(grandfather);
-
                         father -> replace_left(current -> get_right());
-                        father -> set_parent(current);
                         current -> replace_right(father);
+                        //current -> replace_left(grandfather);
+
+//                        father -> replace_left(current -> get_right());
+                        father -> set_parent(current);
+//                        current -> replace_right(father);
                         grandfather -> replace_right(current);
                         current -> flip_color();
                         grandfather -> flip_color();
 
-                        if( grandfather == this -> _head)
-                            this -> _head = current;
+                        //if( grandfather == this -> _head)
+                        //    this -> _head = current;
 
                     }
 

@@ -58,8 +58,15 @@ int main()
 
     //firs test case
     //std::vector<int> data = {40,20, 60,80,50,10,30,25,2,1};
-    std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8, 9};
-//    std::vector<int> data = {10, 5, 0};
+    //std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, /*8, 9*/};
+    //left - left case
+    //std::vector<int> data = {15,20, 10, 5, 3,4};
+    //left - right case
+    //std::vector<int> data = {15, 20, 10, 5,8,9};
+    //right - right case
+    std::vector<int> data = {15, 20,10,30, 40,41};
+    //right - left case
+    //std::vector<int> data = {15,10,20,30,25,31};
     for( auto &a : data)
     {
         rbt.insert(a);

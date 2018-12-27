@@ -80,6 +80,211 @@ public:
 
     void reorganize(std::shared_ptr<Node<T>> current)
     {
+        if( current != nullptr)
+        {
+            // case 0 - current is the root
+            if (current == this->_head && current -> is_red())
+            {
+                current -> flip_color();
+            }
+
+            std::shared_ptr<Node<T>> father = nullptr;
+
+            father = current -> get_parent();
+
+            //case 0.1 - both childrens are red -> recolor?
+            if (father != nullptr && father -> get_left() != nullptr && father -> get_right() != nullptr)
+            {
+                if(father -> get_left() -> is_red() && father -> get_right() -> is_red())
+                {
+                    father -> get_left() -> flip_color();
+                    father -> get_right() -> flip_color();
+                    father -> flip_color();
+                    this -> reorganize(father);
+                }
+            }
+            std::shared_ptr<Node<T>> grandfather = nullptr;
+
+            if(father != nullptr && father -> get_parent() != nullptr && father -> is_red() && current -> is_red())
+            {
+                grandfather = father -> get_parent();
+                std::shared_ptr<Node<T>> ancestor = nullptr;
+                if(grandfather != nullptr)
+                {
+                    ancestor = grandfather -> get_parent();
+                }
+                //case 1 - father is left
+                if (father == grandfather -> get_left())
+                {
+                    //case 1a - current is left (left-left)
+                    if(current == father -> get_left())
+                    {
+
+                        grandfather -> replace_left(father -> get_right());
+                        father -> replace_right(grandfather);
+                        father -> set_parent(grandfather -> get_parent());
+                        grandfather-> set_parent(father);
+
+                        if(ancestor != nullptr)
+                        {
+                            if (grandfather == ancestor -> get_left())
+                            {
+                                ancestor -> replace_left(father);
+                            } else
+                            {
+                                ancestor -> replace_right(father);
+                            }
+                        }
+
+                        //recolor?
+                        if (!grandfather -> is_red())
+                        {
+                            grandfather -> flip_color();
+                        }
+
+                        if (father -> is_red())
+                        {
+                            father -> flip_color();
+                        }
+
+                        if (grandfather == this -> _head)
+                        {
+                            this -> _head = father;
+                        }
+
+                        this->reorganize(father);
+                    } else //1b current is right (left - right)
+                    {
+                        father -> replace_right(current -> get_left());
+                        father -> set_parent(current);
+                        current -> replace_left(father);
+                        current-> set_parent(grandfather -> get_parent());
+                        grandfather -> replace_left(current -> get_right());
+                        current -> replace_right(grandfather);
+                        grandfather -> set_parent(current);
+
+                        if(ancestor != nullptr)
+                        {
+                            if (grandfather == ancestor -> get_left())
+                            {
+                                ancestor -> replace_left(current);
+                            } else
+                            {
+                                ancestor -> replace_right(current);
+                            }
+                        }
+
+                       //recolor?
+                        if (current -> is_red())
+                        {
+                            current -> flip_color();
+                        }
+
+                        if (!grandfather -> is_red())
+                        {
+                            grandfather -> flip_color();
+                        }
+
+
+
+                        if (grandfather == this -> _head)
+                        {
+                            this -> _head = current;
+                        }
+
+                        this -> reorganize(current);
+                    }
+                } else //case 2 father is right
+                {
+                    //case 2a current is right (right-right)
+                    if(current == father-> get_right())
+                    {
+                        grandfather -> replace_right(father -> get_left());
+                        grandfather -> set_parent(father);
+                        father -> set_parent(grandfather -> get_parent());
+                        father -> replace_left(grandfather);
+
+                        if(ancestor != nullptr)
+                        {
+                            if (grandfather == ancestor -> get_left())
+                            {
+                                ancestor -> replace_left(father);
+                            } else
+                            {
+                                ancestor -> replace_right(father);
+                            }
+                        }
+
+                        //recolor?
+                        if (!grandfather -> is_red())
+                        {
+                            grandfather -> flip_color();
+                        }
+
+                        if (father -> is_red())
+                        {
+                            father -> flip_color();
+                        }
+
+                        if (grandfather == this -> _head)
+                        {
+                            this -> _head = father;
+                        }
+
+                        this->reorganize(father);
+
+                    } else //case 2b, current is left (right - left)
+                    {
+                        father -> replace_left(current -> get_right());
+                        father -> set_parent(current);
+                        current -> replace_right(father);
+                        current-> set_parent(grandfather -> get_parent());
+                        grandfather -> replace_right(current -> get_left());
+                        current -> replace_left(grandfather);
+                        grandfather -> set_parent(current);
+
+
+                        if(ancestor != nullptr)
+                        {
+                            if (grandfather == ancestor -> get_left())
+                            {
+                                ancestor -> replace_left(current);
+                            } else
+                            {
+                                ancestor -> replace_right(current);
+                            }
+                        }
+
+                       //recolor?
+                        if (current -> is_red())
+                        {
+                            current -> flip_color();
+                        }
+
+                        if (!grandfather -> is_red())
+                        {
+                            grandfather -> flip_color();
+                        }
+
+                        if (grandfather == this -> _head)
+                        {
+                            this -> _head = current;
+                        }
+
+                        this -> reorganize(current);
+
+                    }
+                }
+
+            }
+
+
+        }
+    }
+
+/*
+    void reorganize(std::shared_ptr<Node<T>> current)
+    {
         if (current != nullptr && current -> get_parent() != nullptr)
         {
             // case 0 - current is the rooti
@@ -113,25 +318,10 @@ public:
                 {
                     uncle_is_red = uncle->is_red();
                 }
-/*
-                //case 0.5 - if a node has red children reverse all 3 colors
 
-                if(father -> is_red() && uncle_is_red)
-                {
-                    father -> flip_color();
-                    uncle -> flip_color();
-                    if(grandfather != this->_head)
-                        grandfather -> flip_color();
-                    //reorg from grandfather
-                    this -> reorganize(grandfather);
-                }
-*/
-
-                /*
-                1:  Both father and uncle are Red -- color father and uncle
-                Black, color grandparent Red. Point X to grandparent and
-                check new situation.
-                */
+                //1:  Both father and uncle are Red -- color father and uncle
+                //Black, color grandparent Red. Point X to grandparent and
+                //check new situation.
                 if( father->is_red() && uncle_is_red)
                 {
                     father->flip_color();
@@ -145,11 +335,9 @@ public:
                 if(father->is_red() && !uncle_is_red)
                 {
 
-                    /*
-                    2 (zig-zag): Parent is Red, but uncle is Black. X and its parent
-                    are opposite type children -- color grandparent Red, color X
-                    Black, rotate left(right) on parent, rotate right(left) on grandparent
-                    */
+                    //2 (zig-zag): Parent is Red, but uncle is Black. X and its parent
+                    //are opposite type children -- color grandparent Red, color X
+                    //Black, rotate left(right) on parent, rotate right(left) on grandparent
 
                     if (father == grandfather->get_left() && current == father -> get_right())
                     {
@@ -190,11 +378,9 @@ public:
 
                     }
 
-                    /*
-                    3 (zig-zig):  Parent is Red, but uncle is Black. X and its parent
-                    are both left (right) children -- color parent Black, color
-                    grandparent Red, rotateright(left) on grandparent
-                    */
+                    //3 (zig-zig):  Parent is Red, but uncle is Black. X and its parent
+                    //are both left (right) children -- color parent Black, color
+                    //grandparent Red, rotateright(left) on grandparent
 
                     if (father == grandfather->get_left() && current == father -> get_left())
                     {
@@ -251,6 +437,7 @@ public:
             }
         }
     }
+*/
 };
 
 #endif

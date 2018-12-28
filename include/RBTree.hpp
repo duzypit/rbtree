@@ -17,6 +17,30 @@
 template<typename T>
 class RBTree : public BSTree<T>
 {
+private:
+
+    std::shared_ptr<Node<T>> get_uncle(std::shared_ptr<Node<T>> current)
+    {
+        std::shared_ptr<Node<T>> uncle = nullptr;
+        if(current -> get_parent() != nullptr)
+        {
+            auto father = current -> get_parent();
+            if (father -> get_parent())
+            {
+                auto grandfather = father -> get_parent();
+
+                if(father == grandfather -> get_left())
+                {
+                    if(grandfather -> get_right() != nullptr) { uncle = grandfather -> get_right(); }
+                } else
+                {
+                    if(grandfather -> get_left() != nullptr ) {uncle = grandfather -> get_left(); }
+                }
+            }
+        }
+
+        return uncle;
+    }
 
 public:
     RBTree() {};
@@ -93,6 +117,20 @@ public:
             father = current -> get_parent();
 
             //case 0.1 - both childrens are red -> recolor?
+            //father and uncle are red
+            if(father != nullptr && father -> is_red())
+            {
+                auto uncle = this->get_uncle(current);
+                if(uncle != nullptr && uncle -> is_red())
+                {
+                    uncle -> flip_color();
+                    father -> flip_color();
+                    father -> get_parent() -> flip_color();
+                    this -> reorganize(father -> get_parent());
+                }
+            }
+
+            /*
             if (father != nullptr && father -> get_left() != nullptr && father -> get_right() != nullptr)
             {
                 if(father -> get_left() -> is_red() && father -> get_right() -> is_red())
@@ -103,6 +141,7 @@ public:
                     this -> reorganize(father);
                 }
             }
+            */
             std::shared_ptr<Node<T>> grandfather = nullptr;
 
             if(father != nullptr && father -> get_parent() != nullptr && father -> is_red() && current -> is_red())
@@ -121,6 +160,10 @@ public:
                     {
 
                         grandfather -> replace_left(father -> get_right());
+                        if(grandfather -> get_left() != nullptr)
+                        {
+                            grandfather -> get_left() -> set_parent(grandfather);
+                        }
                         father -> replace_right(grandfather);
                         father -> set_parent(grandfather -> get_parent());
                         grandfather-> set_parent(father);
@@ -156,6 +199,10 @@ public:
                     } else //1b current is right (left - right)
                     {
                         father -> replace_right(current -> get_left());
+                        if(father -> get_right() != nullptr)
+                        {
+                            father -> get_right() -> set_parent(father);
+                        }
                         father -> set_parent(current);
                         current -> replace_left(father);
                         current-> set_parent(grandfather -> get_parent());
@@ -200,6 +247,10 @@ public:
                     if(current == father-> get_right())
                     {
                         grandfather -> replace_right(father -> get_left());
+                        if(grandfather -> get_right() != nullptr)
+                        {
+                            grandfather -> get_right() -> set_parent(grandfather);
+                        }
                         father -> set_parent(grandfather -> get_parent());
                         grandfather -> set_parent(father);
                         father -> replace_left(grandfather);
@@ -236,6 +287,11 @@ public:
                     } else //case 2b, current is left (right - left)
                     {
                         father -> replace_left(current -> get_right());
+                        if(father -> get_left() != nullptr)
+                        {
+                            father -> get_left() -> set_parent(father);
+                        }
+
                         father -> set_parent(current);
                         current -> replace_right(father);
                         current-> set_parent(grandfather -> get_parent());

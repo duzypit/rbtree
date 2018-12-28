@@ -200,8 +200,8 @@ public:
                     if(current == father-> get_right())
                     {
                         grandfather -> replace_right(father -> get_left());
-                        grandfather -> set_parent(father);
                         father -> set_parent(grandfather -> get_parent());
+                        grandfather -> set_parent(father);
                         father -> replace_left(grandfather);
 
                         if(ancestor != nullptr)

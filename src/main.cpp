@@ -57,8 +57,9 @@ int main()
     RBTree<int> rbt;
 
     //firs test case
+    std::vector<int> data = {10, 85, 15, 70, 20, 60, 30, 50, 65, 80, 90, 40, 5, 55};
     //std::vector<int> data = {40,20, 60,80,50,10,30,25,2,1};
-    std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8, 9};
+    //std::vector<int> data = {0, 5, 10, 7, 12, 8, 6, 8, 9};
     //left - left case
     //std::vector<int> data = {15,20, 10, 5, 3,4}/;
     //left - right case

@@ -32,9 +32,10 @@ public:
     }
 
     //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
-    void remove(T key)
+    std::shared_ptr<Node<T>> remove(T key)
     {
         auto result = this -> search(key);
+        std::shared_ptr<Node<T>> successor = nullptr;
 
         if(result.second != nullptr)
         {
@@ -51,6 +52,7 @@ public:
                 }
                 //if deletion node is the root node
                 if (_head == result.second) _head = nullptr;
+                //successor is equal to nullptr
             }
             //case 2. deleting a node that has one subtree
             //left subtree
@@ -59,13 +61,16 @@ public:
                 if(result.second == _head)
                 {
                         _head = result.second -> get_left();
+                        successor = _head;
                 }
                 if (node_is_left_child(result.first, result.second))
                 {
                         result.first -> replace_left(result.second -> get_left());
+                        successor = result.first -> get_left();
                 } else
                 {
                         result.first -> replace_right(result.second -> get_left());
+                        successor = result.first -> get_right();
                 }
             }
             //right subtree
@@ -76,18 +81,22 @@ public:
                     if(result.second == _head)
                     {
                         _head = result.second -> get_right();
+                        successor = _head;
                     } else
                     {
                         result.first -> replace_left(result.second -> get_right());
+                        successor = result.first ->get_left();
                     }
                 } else
                 {
                     if(result.second == _head)
                     {
                         _head = result.second -> get_right();
+                        successor = _head;
                     } else
                     {
                         result.first -> replace_right(result.second -> get_right());
+                        successor = result.first -> get_right();
                     }
                 }
             }
@@ -95,7 +104,7 @@ public:
             if(result.second -> get_left() != nullptr && result.second -> get_right() != nullptr)
             {
                 //find successor node in the node with the minimum value in the right subtree
-                auto right_subtree_head = result.second -> get_right();
+                auto right_subtree_head = successor = result.second -> get_right();
                 auto to_delete = result.second;
                 // if right subtree head has no left leaf just swap it
                 if (right_subtree_head -> get_left() == nullptr)
@@ -121,22 +130,23 @@ public:
                 } else //both leafs present
                 {
                     std::cout << "second" << std::endl;
-                    auto successor = find_min_val_node(right_subtree_head);
+                    auto replacement = find_min_val_node(right_subtree_head);
+                    successor = replacement.second;
                     if(node_is_left_child(result.first, result.second))
                     {
                        //left child
-                        result.first -> replace_left(successor.second);
+                        result.first -> replace_left(replacement.second);
                     } else
                     {
                         //right child
-                        result.first ->replace_right(successor.second);
+                        result.first ->replace_right(replacement.second);
                     }
                     if(_head == to_delete){
-                        _head = successor.second;
+                        _head = replacement.second;
                     }
-                    successor.second -> replace_left(to_delete -> get_left());
-                    successor.second -> replace_right(to_delete -> get_right());
-                    successor.first -> null_left();
+                    replacement.second -> replace_left(to_delete -> get_left());
+                    replacement.second -> replace_right(to_delete -> get_right());
+                    replacement.first -> null_left();
                 }
 
                 to_delete -> null_left();
@@ -146,6 +156,7 @@ public:
 
             }
         }
+        return successor;
     }
 
     //void destroy_tree();

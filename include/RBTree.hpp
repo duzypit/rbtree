@@ -364,33 +364,35 @@ public:
     }
 
     /**
-     * @brief Removes the node with indicated key. If needed runs, performs
-     *        reorganization
+     * @brief Removes the node with indicated key. If needed performs
+     *        remove of double black node
      *
      * @pram T key
      * @return void
      */
     void remove(T key)
     {
+        bool current_is_red = false;
+        bool successor_is_red = false;
         //what if we have two node with same value in the tree?
 
-        //2. standard bst delete
-        //if current is leaf or has only one child
-        //and one of them is red
-        //mark replaced child as balack - no change in black height
-        //
+        //Standard bst delete
+        //but check if successor is double black
         auto result = this -> search(key);
-        if(result.second -> is_red())
+        current_is_red = result.second -> is_red();
+
+        auto successor = BSTree<T>::remove(key);
+        if(successor != nullptr)
         {
-            BSTree<T>::remove(key);
+            successor_is_red = successor -> is_red();
         }
 
-        //3. both current and its child are black
-        //remove current and color child as double black
-        //null leaf is consiered as black
-        if (current -> is_double_black())
+        //successor equal to nullptr may denote that deleted node was head!
+
+        //both current and its child are black
+        if (!current_is_red && !successor_is_red && this -> _head != nullptr)
         {
-            this -> remove_double_black(current);
+            this -> remove_double_black(successor);
         }
 
     }

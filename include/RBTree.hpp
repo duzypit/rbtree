@@ -18,8 +18,7 @@ class RBTree : public BSTree<T>
 private:
 
     /**
-     *  get_uncle()
-     *  checks if uncle for current node exists, returns pointer if yes, otherwise
+     *  @brief Checks if uncle for current node exists, returns pointer if yes, otherwise
      *  nullptr
      *
      *  @param std::shared_ptr<Node<T>>
@@ -49,8 +48,7 @@ private:
     }
 
     /**
-     * fix_root_colour()
-     * Checks if provided ptr points to head and if it is red flips color
+     * @brief Checks if provided ptr points to head and if it is red flips color
      *
      * @param std::shared_ptr<Node<T>> candidate
      */
@@ -64,8 +62,7 @@ private:
 
 
     /**
-     * fix_left_left()
-     * Fix the situation when father and current nodes are both left childrens
+     * @brief Fix the situation when father and current nodes are both left childrens
      *
      * @param std::shared_ptr<Node<T>> father
      * @param std::shared_ptr<Node<T>> grandfather
@@ -126,9 +123,9 @@ public:
     ~RBTree() {};
 
     /**
-     * Inserts provided value int a tree, function is recursively traversing throught
-     * the tree. First param is a value to insert, second parent node. Returns ptr
-     * to newly inserted node.
+     * @brief Inserts provided value int a tree, function is recursively traversing throught
+     *        the tree. First param is a value to insert, second parent node. Returns ptr
+     *        to newly inserted node.
      *
      * @param T value
      * @param std::shared_ptr<Node<T>> parent
@@ -179,9 +176,8 @@ public:
     }
 
     /**
-     * reorganize()
-     * Checks wether the properties of RBtree are preserved if not it performs
-     * reorganization.
+     * @brief Checks wether the properties of RBtree are preserved if not it
+     *        performs reorganization.
      *
      * @param std::shared_ptr<Node<T>> current
      */
@@ -368,8 +364,8 @@ public:
     }
 
     /**
-     * remove()
-     * Removes the node with indicated key. If needed runs, performs reorganization
+     * @brief Removes the node with indicated key. If needed runs, performs
+     *        reorganization
      *
      * @pram T key
      * @return void
@@ -377,6 +373,11 @@ public:
     void remove(T key)
     {
         //what if we have two node with same value in the tree?
+
+        //2. standard bst delete
+        //if current is leaf or has only one child
+        //and one of them is red
+        //mark replaced child as balack - no change in black height
         //
         auto result = this -> search(key);
         if(result.second -> is_red())
@@ -384,12 +385,31 @@ public:
             BSTree<T>::remove(key);
         }
 
+        //3. both current and its child are black
+        //remove current and color child as double black
+        //null leaf is consiered as black
+        if (current -> is_double_black())
+        {
+            this -> remove_double_black(current);
+        }
 
     }
 
 
-    void remove_reorganize(std::shared_ptr<Node<T>> current)
+    void remove_double_black(std::shared_ptr<Node<T>> current)
     {
+        //
+        //3.2. current is double black and it is not root
+        //3.2.1 sibling is black and at least one of siblings children is red
+        //3.2.1.1 left left case
+        //3.2.1.2 left right case
+        //3.2.1.3 right right case
+        //3.2.1.4 right left case
+        //
+        //3.3.1if sibling is black and its both children are black
+        //perform recoloring and recur for the parent if parent is black
+        //in this case if parent was red, then we didn't
+
 
     }
 };

@@ -372,46 +372,75 @@ public:
      */
     void remove(T key)
     {
-        bool current_is_red = false;
-        bool successor_is_red = false;
+        bool current_is_red = true;
+        bool successor_is_red = true;
         //what if we have two node with same value in the tree?
 
         //Standard bst delete
         //but check if successor is double black
         auto result = this -> search(key);
-        current_is_red = result.second -> is_red();
 
-        auto successor = BSTree<T>::remove(key);
-        if(successor != nullptr)
+        //we have a result here
+        if (result.first != nullptr && result.second)
         {
-            successor_is_red = successor -> is_red();
+            current_is_red = result.second -> is_red();
+
+            auto successor = BSTree<T>::remove(key);
+            if((successor.first != nullptr && !successor -> is_red()) ||
+                (successor.first != nullptr && successor.second == nullptr))
+            {
+                successor_is_red = false;
+            }
+
+            //both current and its child are black
+            if (!current_is_red && !successor_is_red && this -> _head != nullptr)
+            {
+                this -> remove_double_black(successor);
+            }
         }
-
-        //successor equal to nullptr may denote that deleted node was head!
-
-        //both current and its child are black
-        if (!current_is_red && !successor_is_red && this -> _head != nullptr)
-        {
-            this -> remove_double_black(successor);
-        }
-
     }
 
 
-    void remove_double_black(std::shared_ptr<Node<T>> current)
+    void remove_double_black(std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> successor)
     {
         //
         //3.2. current is double black and it is not root
-        //3.2.1 sibling is black and at least one of siblings children is red
-        //3.2.1.1 left left case
-        //3.2.1.2 left right case
-        //3.2.1.3 right right case
-        //3.2.1.4 right left case
+        if(successor.second != this -> _head)
+        {
         //
+        //3.2 current is right child
+        if(!successor.first -> node_is_left_child(successor.second))
+        {
+            if(successor.first -> get_left() != nullptr) //sibling is left child
+            {
+                auto sibling = successor.first -> get_left();
+                if(sibling -> get_left() != nullptr && !sibling -> get_left() -> is_red()) //left left case
+                {
+                    successor.first  -> replace_left(sibling -> get_right());
+                    sibling -> set_parent(successor.first -> get_parent());
+                    successor.first -> set_parent(sibling);
+                    sibling -> replace_right(successor.first);
+                } else if(sibling -> get_right() != nullptr && !sibling -> get_right -> is_red()) //left right case
+                {
+
+                }
+            }//sibling exists
+        } else //current is left child
+            if(successor.first -> get_right() != nullptr) //sibling is right child
+            {
+                auto sibling = successor.first -> get_right();
+                if(sibling -> get_right() != nullptr && !sibling -> get_right() -> is_red()) //right right case
+                {
+
+                } else if(sibling -> get_left() != nullptr && !sibling -> get_right() -> is_red()) //right left case
+                {
+
+                }
+            }
         //3.3.1if sibling is black and its both children are black
         //perform recoloring and recur for the parent if parent is black
         //in this case if parent was red, then we didn't
-
+        } //else current is equal to _head
 
     }
 };

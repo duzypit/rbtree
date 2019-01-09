@@ -32,10 +32,11 @@ public:
     }
 
     //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
-    std::shared_ptr<Node<T>> remove(T key)
+    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> remove(T key)
     {
         auto result = this -> search(key);
-        std::shared_ptr<Node<T>> successor = nullptr;
+        //parent, replacement
+        std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> successor = std::make_pair(nullptr, nullptr);
 
         if(result.second != nullptr)
         {
@@ -52,7 +53,7 @@ public:
                 }
                 //if deletion node is the root node
                 if (_head == result.second) _head = nullptr;
-                //successor is equal to nullptr
+                //successor & his parent is equal to nullptr
             }
             //case 2. deleting a node that has one subtree
             //left subtree
@@ -61,16 +62,16 @@ public:
                 if(result.second == _head)
                 {
                         _head = result.second -> get_left();
-                        successor = _head;
+                        successor.second = _head;
                 }
                 if (node_is_left_child(result.first, result.second))
                 {
                         result.first -> replace_left(result.second -> get_left());
-                        successor = result.first -> get_left();
+                        successor = std::make_pair(result.first, result.first -> get_left());
                 } else
                 {
                         result.first -> replace_right(result.second -> get_left());
-                        successor = result.first -> get_right();
+                        successor = std::make_pair(result.first, result.first -> get_right());
                 }
             }
             //right subtree
@@ -81,22 +82,22 @@ public:
                     if(result.second == _head)
                     {
                         _head = result.second -> get_right();
-                        successor = _head;
+                        successor.second = _head;
                     } else
                     {
                         result.first -> replace_left(result.second -> get_right());
-                        successor = result.first ->get_left();
+                        successor = std::make_pair(result.first, result.first ->get_left());
                     }
                 } else
                 {
                     if(result.second == _head)
                     {
                         _head = result.second -> get_right();
-                        successor = _head;
+                        successor.second = _head;
                     } else
                     {
                         result.first -> replace_right(result.second -> get_right());
-                        successor = result.first -> get_right();
+                        successor = std::make_pair(result.first, result.first -> get_right());
                     }
                 }
             }
@@ -104,7 +105,8 @@ public:
             if(result.second -> get_left() != nullptr && result.second -> get_right() != nullptr)
             {
                 //find successor node in the node with the minimum value in the right subtree
-                auto right_subtree_head = successor = result.second -> get_right();
+                auto right_subtree_head = result.second -> get_right();
+                successor = std::make_pair(result.first, result.second -> get_right());
                 auto to_delete = result.second;
                 // if right subtree head has no left leaf just swap it
                 if (right_subtree_head -> get_left() == nullptr)
@@ -131,7 +133,7 @@ public:
                 {
                     std::cout << "second" << std::endl;
                     auto replacement = find_min_val_node(right_subtree_head);
-                    successor = replacement.second;
+                    successor = std::make_pair(result.first, replacement.second);
                     if(node_is_left_child(result.first, result.second))
                     {
                        //left child

@@ -420,9 +420,23 @@ public:
                     sibling -> set_parent(successor.first -> get_parent());
                     successor.first -> set_parent(sibling);
                     sibling -> replace_right(successor.first);
+                    if(successor.first == this -> _head)
+                    {
+                        this -> _head = sibling;
+                    }
+                    //recolor?
+
                 } else if(sibling -> get_right() != nullptr && !sibling -> get_right -> is_red()) //left right case
                 {
-
+                    successor.first -> replace_left(sibling -> get_right());
+                    sibling -> set_parent(successor.first -> get_parent());
+                    successor.first -> set_parent(sibling);
+                    sibling -> replace_right(successor.first);
+                    if(successor.first == this -> _head)
+                    {
+                        this -> _head = sibling;
+                    }
+                    //recolor?
                 }
             }//sibling exists
         } else //current is left child
@@ -431,10 +445,19 @@ public:
                 auto sibling = successor.first -> get_right();
                 if(sibling -> get_right() != nullptr && !sibling -> get_right() -> is_red()) //right right case
                 {
+                    successor.first -> replace_right(sibling -> get_right());
+                    sibling -> set_parent(successor.first -> get_parent());
+                    successor.first -> set_parent(sibling);
+                    sibling -> replace_left(successor.first);
+                    if(successor.first == this -> _head)
+                    {
+                        this -> _head = sibling;
+                    }
+                    //recolor?
 
                 } else if(sibling -> get_left() != nullptr && !sibling -> get_right() -> is_red()) //right left case
                 {
-
+                    auto sibling_child = sibling -> get_right();
                 }
             }
         //3.3.1if sibling is black and its both children are black

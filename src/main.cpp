@@ -3,44 +3,84 @@
 #include "../include/RBTree.hpp"
 #include "../include/Node.hpp"
 #include <vector>
+#include "gtest/gtest.h"
 
+class BSTTest : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        std::vector<int> data = {50,30,70,10,5,7,40,39,38,45,80,90,75};
+        for (const auto & d : data)
+        {
+            bst.insert(d);
+        }
+
+
+    }
+
+    BSTree<int> bst;
+};
+
+TEST_F(BSTTest, insertion)
+{
+    auto head = bst.get_head();
+    //check head
+    ASSERT_EQ(head -> get_key(), 50);
+    //check right child
+    ASSERT_EQ(head -> get_right() -> get_key(), 70);
+}
+
+TEST_F(BSTTest, search)
+{
+    int needle = 15;
+    auto result = bst.search(needle);
+    ASSERT_EQ(result.first, nullptr);
+    ASSERT_EQ(result.second, nullptr);
+
+    needle = 90;
+    result = bst.search(needle);
+    ASSERT_NE(result.first, nullptr);
+    EXPECT_EQ(result.second -> get_key(), needle);
+
+    needle = 50;
+    result = bst.search(needle);
+    std::cout << "value of result.first (should be nullptr): " << result.first -> get_key() << std::endl;
+    ASSERT_EQ(result.first, nullptr);
+    EXPECT_EQ(result.second -> get_key(), needle);
+}
+
+TEST_F(BSTTest, min_val)
+{
+    //to be reworked - is the argument really needed?
+    auto min_pair = bst.find_min_val_node(bst.get_head());
+    ASSERT_NE(min_pair.first, nullptr);
+    EXPECT_EQ(min_pair.second -> get_key(), 5);
+
+}
+
+TEST_F(BSTTest, remove)
+{
+    bst.remove(7);
+
+    bst.remove(10);
+
+    bst.remove(70);
+
+    bst.remove(50);
+
+}
+
+
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+
+/*
 int main()
 {
-/*
-    // create tree
-    BSTree<int> t;
-    t.insert(50);
-    t.insert(30);
-    t.insert(70);
-    t.insert(10);
-    t.insert(5);
-    t.insert(7);
-    t.insert(40);
-    t.insert(39);
-    t.insert(38);
-    t.insert(45);
-    t.insert(80);
-    t.insert(90);
-    t.insert(75);
-
-    TreeInspector inspector(t);
-
-    //test: search
-    int search_val = 15;
-    auto result = t.search(search_val);
-
-    std::cout << "search for elem "<< search_val <<", results:" << std::endl;
-    if (result.first != nullptr)
-        std::cout << "parent pointer points to: " << result.first -> get_key() << std::endl;
-    if (result.second != nullptr)
-        std::cout << "needle pointer points to: " << result.second -> get_key() << std::endl;
-
-    //test: search for min val
-    auto min = t.find_min_val_node(result.second);
-
-    if (min.second != nullptr)
-        std::cout << "Min elem value = " << min.second -> get_key() << std::endl;
-
     t.remove(7);
     inspector.print_tree(t);
     t.remove(10);
@@ -51,7 +91,7 @@ int main()
     t.remove(50);
     inspector.print_tree(t);
 
-*/
+
     std::cout << "RBTree" << std::endl;
 
     RBTree<int> rbt;
@@ -76,3 +116,4 @@ int main()
     TreeInspector inspector(rbt);
 
 }
+*/

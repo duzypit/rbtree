@@ -187,9 +187,12 @@ public:
 
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value) const
     {
+        if(_head != nullptr && _head -> get_key() == value)
+        {
+            return make_pair(nullptr, _head);
+        }
         std::shared_ptr<Node<T>> parent = nullptr;
         std::shared_ptr<Node<T>> needle = _head;
-
         do {
             parent = needle;
 
@@ -207,6 +210,7 @@ public:
        } while((needle != nullptr) && (needle -> get_key() != value));
 
         return std::make_pair(parent, needle);
+
     }
 
     std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)

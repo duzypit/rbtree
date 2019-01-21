@@ -15,8 +15,6 @@ protected:
         {
             bst.insert(d);
         }
-
-
     }
 
     BSTree<int> bst;
@@ -45,7 +43,6 @@ TEST_F(BSTTest, search)
 
     needle = 50;
     result = bst.search(needle);
-    std::cout << "value of result.first (should be nullptr): " << result.first -> get_key() << std::endl;
     ASSERT_EQ(result.first, nullptr);
     EXPECT_EQ(result.second -> get_key(), needle);
 }
@@ -61,14 +58,38 @@ TEST_F(BSTTest, min_val)
 
 TEST_F(BSTTest, remove)
 {
+    //TreeInspector i(bst);
+    //Hibbard check
+    //1. the deletion node has no subtree, right child
     bst.remove(7);
+    auto min_pair = bst.find_min_val_node(bst.get_head());
+    EXPECT_EQ(min_pair.first -> get_key(), 10);
+    EXPECT_EQ(min_pair.second -> get_key(), 5);
+    EXPECT_EQ(min_pair.second -> get_right(), nullptr);
 
+    //2. no subtree, left child
+    bst.remove(75);
+    auto needle = bst.search(80);
+    EXPECT_EQ(needle.second -> get_left(), nullptr);
+
+
+    //2.the deletion node has only one subtree
     bst.remove(10);
+    needle = bst.search(30);
+    EXPECT_EQ(needle.second -> get_left() -> get_key(), 5);
 
     bst.remove(70);
+    EXPECT_EQ(bst.get_head() -> get_right() -> get_key(), 80);
 
-    bst.remove(50);
+    //3. the deletion node has 3 subtrees
+    //bst.remove(40);
+    //TreeInspector i(bst);
+    //needle = bst.search(30);
+    //EXPECT_EQ(needle.second -> get_right() -> get_key(), 38);
 
+    //4. special case - remove of head node
+    //bst.remove(50);
+    //EXPECT_EQ(bst.get_head() -> get_key(), 90);
 }
 
 
@@ -81,17 +102,6 @@ int main(int argc, char** argv) {
 /*
 int main()
 {
-    t.remove(7);
-    inspector.print_tree(t);
-    t.remove(10);
-    inspector.print_tree(t);
-    t.remove(70);
-    inspector.print_tree(t);
-    std::cout << "remove 50" << std::endl;
-    t.remove(50);
-    inspector.print_tree(t);
-
-
     std::cout << "RBTree" << std::endl;
 
     RBTree<int> rbt;

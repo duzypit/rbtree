@@ -163,7 +163,7 @@ public:
 
     //void destroy_tree();
 
-    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent) const
+    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent = nullptr) const
     {
 
         if (parent == nullptr)

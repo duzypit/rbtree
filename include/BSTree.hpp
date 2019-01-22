@@ -150,22 +150,22 @@ public:
                 } else //both leafs present
                 {
                     auto replacement = find_min_val_node(right_subtree_head);
-                    successor = std::make_pair(result.first, replacement.second);
+                    successor = std::make_pair(result.first, replacement);
                     if(node_is_left_child(result.first, result.second))
                     {
                        //left child
-                        result.first -> replace_left(replacement.second);
+                        result.first -> replace_left(replacement);
                     } else
                     {
                         //right child
-                        result.first ->replace_right(replacement.second);
+                        result.first ->replace_right(replacement);
                     }
                     if(_head == to_delete){
-                        _head = replacement.second;
+                        _head = replacement;
                     }
-                    replacement.second -> replace_left(to_delete -> get_left());
-                    replacement.second -> replace_right(to_delete -> get_right());
-                    replacement.first -> null_left();
+                    replacement -> replace_left(to_delete -> get_left());
+                    replacement -> replace_right(to_delete -> get_right());
+                    replacement -> get_parent() -> null_left();
                 }
 
                 to_delete -> null_left();
@@ -182,14 +182,14 @@ public:
      * @brief finds node with min value, search begins at given node, default param should be head
      *
      * @param parent node
-     * @return std::pair<parent, needle>
+     * @return needle
      */
-    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent = nullptr) const
+    std::shared_ptr<Node<T>> find_min_val_node(std::shared_ptr<Node<T>> parent = nullptr) const
     {
 
         if (parent == nullptr)
         {
-            return std::make_pair(nullptr, nullptr);
+            return nullptr;
         } else
         {
             std::shared_ptr<Node<T>> needle = nullptr;
@@ -198,11 +198,10 @@ public:
 
             while(needle->get_left() != nullptr)
             {
-                parent = needle;
                 needle = needle -> get_left();
             };
 
-            return std::make_pair(parent, parent->get_left());
+            return needle;
         }
     }
 

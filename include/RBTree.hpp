@@ -409,7 +409,7 @@ public:
         {
         //
         //3.2 current is right child
-        if(!successor.first -> node_is_left_child(successor.second))
+        if(!successor.first -> is_left_child(successor.second))
         {
             if(successor.first -> get_left() != nullptr) //sibling is left child
             {

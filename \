@@ -13,15 +13,9 @@ friend class TreeInspector;
 protected:
     std::shared_ptr<Node<T>> _head = nullptr;
 
-    /**
-     * @brief check if given node is a left node
-     *
-     * @param ptr to needle node
-     * @return bool
-     */
-    bool is_left_child(std::shared_ptr<Node<T>> child)
+    bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
     {
-        return (child -> get_parent() -> get_left() == child);
+        return (parent -> get_left() == child);
     }
 
 public:
@@ -32,25 +26,12 @@ public:
     }
     ~BSTree() {};
 
-    /**
-     * @brief returns head node ptr
-     *
-     * @return ptr to head
-     */
     std::shared_ptr<Node<T>> get_head() const
     {
         return _head;
     }
 
-    /**
-     * @brief removes node from tree, using Hibbard algorithm
-     * more details:
-     * http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
-     * http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete2.html
-     *
-     * @param T key
-     * @return std::pair<parent, successor>
-     */
+    //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> remove(T key)
     {
         auto result = this -> search(key);
@@ -130,6 +111,7 @@ public:
                 // if right subtree head has no left leaf just swap it
                 if (right_subtree_head -> get_left() == nullptr)
                 {
+                    std::cout << "first" << std::endl;
                     if(node_is_left_child(result.first, to_delete))
                     {
                        //left child
@@ -149,6 +131,7 @@ public:
 
                 } else //both leafs present
                 {
+                    std::cout << "second" << std::endl;
                     auto replacement = find_min_val_node(right_subtree_head);
                     successor = std::make_pair(result.first, replacement.second);
                     if(node_is_left_child(result.first, result.second))
@@ -178,12 +161,8 @@ public:
         return successor;
     }
 
-    /**
-     * @brief finds node with min value, search begins at given node, default param should be head
-     *
-     * @param parent node
-     * @return std::pair<parent, needle>
-     */
+    //void destroy_tree();
+
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent = nullptr) const
     {
 
@@ -206,20 +185,17 @@ public:
         }
     }
 
-    /**
-     * @brief serch for node with given value
-     *
-     * @param key
-     * @return std::pair<parent, needle>
-     */
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value) const
     {
         if(_head != nullptr && _head -> get_key() == value)
         {
-            return make_pair(nullptr, _head);
-        }
+            std::cout << "xd" << std::endl;
+            return std::make_pair(nullptr, _head);
+        } else
+        {
         std::shared_ptr<Node<T>> parent = nullptr;
         std::shared_ptr<Node<T>> needle = _head;
+
         do {
             parent = needle;
 
@@ -237,16 +213,9 @@ public:
        } while((needle != nullptr) && (needle -> get_key() != value));
 
         return std::make_pair(parent, needle);
-
+        }
     }
 
-    /**
-     * @brief insert a node into tree, new node stores parent address
-     *
-     * @pram key
-     * @param ptr to parent node
-     * @return ptr to inserted node
-     */
     std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
         if(parent == nullptr && _head == nullptr)
@@ -267,7 +236,6 @@ public:
                 {
                     parent -> add_left(value);
                     current = parent -> get_left();
-                    current = set_parent(parent);
                 } else
                 {
                     this -> insert(value, parent -> get_left());
@@ -280,7 +248,6 @@ public:
                 {
                     parent -> add_right(value);
                     current = parent -> get_right();
-                    current -> set_parent(parent);
                 } else
                 {
 

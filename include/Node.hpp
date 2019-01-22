@@ -87,7 +87,7 @@ public:
         (_color == Color::red) ? _color = Color::black : _color = Color::red;
     }
 
-    std::shared_ptr<Node<T>> get_parent()
+    std::shared_ptr<Node<T>> get_parent() const
     {
         return _parent;
     }

@@ -57,88 +57,88 @@ public:
         //parent, replacement
         std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> successor = std::make_pair(nullptr, nullptr);
 
-        if(result.second != nullptr)
+        if(result != nullptr)
         {
             //we have a valid result
             //case 1. deleting node that has no subtree
-            if (result.second -> get_left() == nullptr && result.second -> get_right() == nullptr)
+            if (result -> get_left() == nullptr && result -> get_right() == nullptr)
             {
-                if(node_is_left_child(result.first, result.second))
+                if(this -> is_left_child(result))
                 {
-                    result.first -> null_left();
+                    result -> get_parent() -> null_left();
                 } else
                 {
-                    result.first -> null_right();
+                    result -> get_parent() -> null_right();
                 }
                 //if deletion node is the root node
-                if (_head == result.second) _head = nullptr;
+                if (_head == result) _head = nullptr;
                 //successor & his parent is equal to nullptr
             }
             //case 2. deleting a node that has one subtree
             //left subtree
-            if(result.second -> get_left() != nullptr && result.second -> get_right() == nullptr)
+            if(result -> get_left() != nullptr && result -> get_right() == nullptr)
             {
-                if(result.second == _head)
+                if(result == _head)
                 {
-                        _head = result.second -> get_left();
+                        _head = result -> get_left();
                         successor.second = _head;
                 }
-                if (node_is_left_child(result.first, result.second))
+                if (this -> is_left_child(result))
                 {
-                        result.first -> replace_left(result.second -> get_left());
-                        successor = std::make_pair(result.first, result.first -> get_left());
+                        result -> get_parent() -> replace_left(result -> get_left());
+                        successor = std::make_pair(result -> get_parent(), result -> get_parent() -> get_left());
                 } else
                 {
-                        result.first -> replace_right(result.second -> get_left());
-                        successor = std::make_pair(result.first, result.first -> get_right());
+                        result -> get_parent() -> replace_right(result -> get_left());
+                        successor = std::make_pair(result -> get_parent(), result -> get_parent() -> get_right());
                 }
             }
             //right subtree
-            if(result.second -> get_left() == nullptr && result.second -> get_right() != nullptr)
+            if(result -> get_left() == nullptr && result -> get_right() != nullptr)
             {
-                if (node_is_left_child(result.first, result.second))
+                if (this -> is_left_child(result))
                 {
-                    if(result.second == _head)
+                    if(result == _head)
                     {
-                        _head = result.second -> get_right();
+                        _head = result -> get_right();
                         successor.second = _head;
                     } else
                     {
-                        result.first -> replace_left(result.second -> get_right());
-                        successor = std::make_pair(result.first, result.first ->get_left());
+                        result -> get_parent() -> replace_left(result -> get_right());
+                        successor = std::make_pair(result -> get_parent(), result -> get_parent() -> get_left());
                     }
                 } else
                 {
-                    if(result.second == _head)
+                    if(result == _head)
                     {
-                        _head = result.second -> get_right();
+                        _head = result -> get_right();
                         successor.second = _head;
                     } else
                     {
-                        result.first -> replace_right(result.second -> get_right());
+                        result -> get_head() -> replace_right(result -> get_right());
                         successor = std::make_pair(result.first, result.first -> get_right());
                     }
                 }
             }
             //case 3. deletion node has two subtrees
-            if(result.second -> get_left() != nullptr && result.second -> get_right() != nullptr)
+            if(result -> get_left() != nullptr && result -> get_right() != nullptr)
             {
                 //find successor node in the node with the minimum value in the right subtree
-                auto right_subtree_head = result.second -> get_right();
-                successor = std::make_pair(result.first, result.second -> get_right());
-                auto to_delete = result.second;
+                auto right_subtree_head = result -> get_right();
+                successor = std::make_pair(result -> get_parent(), result -> get_right());
+                auto to_delete = result;
                 // if right subtree head has no left leaf just swap it
                 if (right_subtree_head -> get_left() == nullptr)
                 {
-                    if(node_is_left_child(result.first, to_delete))
+                    if(this -> is_left_child(to_delete))
                     {
                        //left child
-                        result.first -> replace_left(right_subtree_head);
+                        result -> get_parent() -> replace_left(right_subtree_head);
                     } else
                     {
                         //right child
-                        result.first ->replace_right(right_subtree_head);
-                        if(result.second -> get_left() != nullptr) {
+                        result -> get_parent() ->replace_right(right_subtree_head);
+                        if(result -> get_left() != nullptr) {
                             right_subtree_head -> replace_left(to_delete -> get_left());
                         }
                     }
@@ -149,16 +149,16 @@ public:
 
                 } else //both leafs present
                 {
-                    auto replacement = find_min_val_node(right_subtree_head);
-                    successor = std::make_pair(result.first, replacement);
-                    if(node_is_left_child(result.first, result.second))
+                    auto replacement = this -> find_min_val_node(right_subtree_head);
+                    successor = std::make_pair(result -> get_parent(), replacement);
+                    if(is_left_child(result))
                     {
                        //left child
-                        result.first -> replace_left(replacement);
+                        result -> get_parent() -> replace_left(replacement);
                     } else
                     {
                         //right child
-                        result.first ->replace_right(replacement);
+                        result -> get_parent() ->replace_right(replacement);
                     }
                     if(_head == to_delete){
                         _head = replacement;
@@ -170,7 +170,7 @@ public:
 
                 to_delete -> null_left();
                 to_delete -> null_right();
-                result.second.reset();
+                result.reset();
                 to_delete.reset();
 
             }
@@ -209,33 +209,29 @@ public:
      * @brief serch for node with given value
      *
      * @param key
-     * @return std::pair<parent, needle>
+     * @return ptr to needle
      */
-    std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value) const
+    std::shared_ptr<Node<T>> search(T value) const
     {
         if(_head != nullptr && _head -> get_key() == value)
         {
-            return make_pair(nullptr, _head);
+            return  _head;
         }
-        std::shared_ptr<Node<T>> parent = nullptr;
         std::shared_ptr<Node<T>> needle = _head;
         do {
-            parent = needle;
 
             if(value > needle -> get_key())
             {
-
                 needle = needle -> get_right();
             } else if(value < needle -> get_key())
             {
                 needle = needle -> get_left();
             }
 
-            if (needle == nullptr) parent = nullptr;
 
        } while((needle != nullptr) && (needle -> get_key() != value));
 
-        return std::make_pair(parent, needle);
+        return needle;
 
     }
 
@@ -266,7 +262,7 @@ public:
                 {
                     parent -> add_left(value);
                     current = parent -> get_left();
-                    current = set_parent(parent);
+                    current -> set_parent(parent);
                 } else
                 {
                     this -> insert(value, parent -> get_left());

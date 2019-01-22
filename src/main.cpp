@@ -15,9 +15,25 @@ protected:
         {
             bst.insert(d);
         }
+
     }
 
     BSTree<int> bst;
+};
+
+class BSTTestRemove : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        std::vector<int> data_hibb = {6, 2,1,4,3,9,8,7,13,11,18};
+        for(const auto& d : data_hibb)
+        {
+            hibbard.insert(d);
+        }
+
+    }
+    BSTree<int> hibbard;
 };
 
 TEST_F(BSTTest, insertion)
@@ -56,30 +72,34 @@ TEST_F(BSTTest, min_val)
 
 }
 
-TEST_F(BSTTest, remove)
+TEST_F(BSTTestRemove, remove)
 {
     //TreeInspector i(bst);
     //Hibbard check
     //1. the deletion node has no subtree, right child
-    bst.remove(7);
-    auto min_pair = bst.find_min_val_node(bst.get_head());
-    EXPECT_EQ(min_pair.first -> get_key(), 10);
-    EXPECT_EQ(min_pair.second -> get_key(), 5);
-    EXPECT_EQ(min_pair.second -> get_right(), nullptr);
+    hibbard.remove(5);
+    auto needle = hibbard.search(2);
+    EXPECT_EQ(needle.first -> get_key(), 6);
+    EXPECT_EQ(needle.second -> get_key(), 2);
+    EXPECT_EQ(needle.second -> get_right() -> get_key(), 4);
 
-    //2. no subtree, left child
-    bst.remove(75);
-    auto needle = bst.search(80);
-    EXPECT_EQ(needle.second -> get_left(), nullptr);
+    //3. the deletion node has both childrens
+    hibbard.remove(9);
+    needle = hibbard.search(11);
+    EXPECT_EQ(needle.second -> get_left() -> get_key(), 8);
+    EXPECT_EQ(needle.second -> get_right() -> get_key(), 13);
 
 
-    //2.the deletion node has only one subtree
-    bst.remove(10);
-    needle = bst.search(30);
-    EXPECT_EQ(needle.second -> get_left() -> get_key(), 5);
+    std::cout << "first!" <<std::endl;
+    //4. remove the head
+    hibbard.remove(6);
+    std::cout << "first!" <<std::endl;
 
-    bst.remove(70);
-    EXPECT_EQ(bst.get_head() -> get_right() -> get_key(), 80);
+    auto head = hibbard.get_head();
+    std::cout << "first!" <<std::endl;
+
+    EXPECT_EQ(head -> get_key(), 8);
+/*    bst.remove(10);
 
     //3. the deletion node has 3 subtrees
     //bst.remove(40);
@@ -89,7 +109,9 @@ TEST_F(BSTTest, remove)
 
     //4. special case - remove of head node
     //bst.remove(50);
-    //EXPECT_EQ(bst.get_head() -> get_key(), 90);
+    //EXPECT_EQ(bst.get_head() -> get_key(), 90)
+    //;
+    */
 }
 
 

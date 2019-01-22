@@ -13,6 +13,13 @@ friend class TreeInspector;
 protected:
     std::shared_ptr<Node<T>> _head = nullptr;
 
+    /**
+     * @brief check if given node is a left node of given parent
+     *
+     * @param ptr to parent node
+     * @param ptr to needle node
+     * @return bool
+     */
     bool node_is_left_child(std::shared_ptr<Node<T>> parent, std::shared_ptr<Node<T>> child)
     {
         return (parent -> get_left() == child);
@@ -26,12 +33,25 @@ public:
     }
     ~BSTree() {};
 
+    /**
+     * @brief returns head node ptr
+     *
+     * @return ptr to head
+     */
     std::shared_ptr<Node<T>> get_head() const
     {
         return _head;
     }
 
-    //http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
+    /**
+     * @brief removes node from tree, using Hibbard algorithm
+     * more details:
+     * http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete.html
+     * http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete2.html
+     *
+     * @param T key
+     * @return std::pair<parent, successor>
+     */
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> remove(T key)
     {
         auto result = this -> search(key);
@@ -159,8 +179,12 @@ public:
         return successor;
     }
 
-    //void destroy_tree();
-
+    /**
+     * @brief finds node with min value, search begins at given node, default param should be head
+     *
+     * @param parent node
+     * @return std::pair<parent, needle>
+     */
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> find_min_val_node(std::shared_ptr<Node<T>> parent = nullptr) const
     {
 
@@ -183,6 +207,12 @@ public:
         }
     }
 
+    /**
+     * @brief serch for node with given value
+     *
+     * @param key
+     * @return std::pair<parent, needle>
+     */
     std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> search(T value) const
     {
         if(_head != nullptr && _head -> get_key() == value)
@@ -211,6 +241,13 @@ public:
 
     }
 
+    /**
+     * @brief insert a node into tree, new node stores parent address
+     *
+     * @pram key
+     * @param ptr to parent node
+     * @return ptr to inserted node
+     */
     std::shared_ptr<Node<T>> insert(T value, std::shared_ptr<Node<T>> parent = nullptr)
     {
         if(parent == nullptr && _head == nullptr)
@@ -231,6 +268,7 @@ public:
                 {
                     parent -> add_left(value);
                     current = parent -> get_left();
+                    current = set_parent(parent);
                 } else
                 {
                     this -> insert(value, parent -> get_left());
@@ -243,6 +281,7 @@ public:
                 {
                     parent -> add_right(value);
                     current = parent -> get_right();
+                    current -> set_parent(parent);
                 } else
                 {
 

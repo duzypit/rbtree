@@ -111,7 +111,6 @@ public:
                 // if right subtree head has no left leaf just swap it
                 if (right_subtree_head -> get_left() == nullptr)
                 {
-                    std::cout << "first" << std::endl;
                     if(node_is_left_child(result.first, to_delete))
                     {
                        //left child
@@ -131,7 +130,6 @@ public:
 
                 } else //both leafs present
                 {
-                    std::cout << "second" << std::endl;
                     auto replacement = find_min_val_node(right_subtree_head);
                     successor = std::make_pair(result.first, replacement.second);
                     if(node_is_left_child(result.first, result.second))

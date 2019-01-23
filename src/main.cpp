@@ -26,7 +26,7 @@ class BSTTestRemove : public ::testing::Test
 protected:
     void SetUp() override
     {
-        std::vector<int> data_hibb = {6, 2,1,4,3,9,8,7,13,11,18};
+        std::vector<int> data_hibb = {6,2,1,4,3,9,8,7,13,11,18};
         for(const auto& d : data_hibb)
         {
             hibbard.insert(d);
@@ -49,7 +49,6 @@ TEST_F(BSTTest, search)
 {
     int needle = 15;
     auto result = bst.search(needle);
-    ASSERT_EQ(result -> get_parent(), nullptr);
     ASSERT_EQ(result, nullptr);
 
     needle = 90;
@@ -62,52 +61,72 @@ TEST_F(BSTTest, search)
     ASSERT_EQ(result -> get_parent(), nullptr);
     EXPECT_EQ(result -> get_key(), needle);
 }
-/*
+
 TEST_F(BSTTest, min_val)
 {
     //to be reworked - is the argument really needed?
-    auto min_pair = bst.find_min_val_node(bst.get_head());
-    ASSERT_NE(min_pair.first, nullptr);
-    EXPECT_EQ(min_pair.second -> get_key(), 5);
+    auto min = bst.find_min_val_node(bst.get_head());
+    ASSERT_NE(min -> get_parent(), nullptr);
+    EXPECT_EQ(min -> get_key(), 5);
 
 }
-*/
-/*
-TEST_F(BSTTestRemove, remove)
-{
-    //TreeInspector i(bst);
-    //Hibbard check
-    //1. the deletion node has no subtree, right child
-    hibbard.remove(5);
-    auto needle = hibbard.search(2);
-    EXPECT_EQ(needle.first -> get_key(), 6);
-    EXPECT_EQ(needle.second -> get_key(), 2);
-    EXPECT_EQ(needle.second -> get_right() -> get_key(), 4);
 
+
+TEST_F(BSTTestRemove, remove_left_leaf)
+{
+
+    //Hibbard algo check
+    //1. the deletion node has no subtree, left child
+    hibbard.remove(3);
+    auto needle = hibbard.search(4);
+    EXPECT_EQ(needle -> get_left(), nullptr);
+}
+
+TEST_F(BSTTestRemove, remove_right_leaf)
+{
+
+    //Hibbard algo check
+    //1. the deletion node has no subtree, left child
+    hibbard.remove(18);
+    auto needle = hibbard.search(13);
+    EXPECT_EQ(needle -> get_right(), nullptr);
+}
+
+
+TEST_F(BSTTestRemove, delete_subtree_both_ch)
+{
     //3. the deletion node has both childrens
     hibbard.remove(9);
-    needle = hibbard.search(11);
-    EXPECT_EQ(needle.second -> get_left() -> get_key(), 8);
-    EXPECT_EQ(needle.second -> get_right() -> get_key(), 13);
+    auto needle = hibbard.search(11);
+    EXPECT_EQ(needle -> get_left() -> get_key(), 8);
+    EXPECT_EQ(needle -> get_right() -> get_key(), 13);
+}
 
+TEST_F(BSTTestRemove, delete_head)
+{
 
-    std::cout << "first!" <<std::endl;
     //4. remove the head
     hibbard.remove(6);
-    std::cout << "first!" <<std::endl;
-
     auto head = hibbard.get_head();
-    std::cout << "first!" <<std::endl;
+    EXPECT_EQ(head -> get_key(), 7);
+    EXPECT_EQ(head -> get_left() -> get_key(), 2);
+    EXPECT_EQ(head -> get_right() -> get_key(), 9);
 
-    EXPECT_EQ(head -> get_key(), 8);
-*/
-/*    bst.remove(10);
+
+}
+/*
+TEST_F(BSTTestRemove, delete_subtree_both_3)
+{
 
     //3. the deletion node has 3 subtrees
     //bst.remove(40);
     //TreeInspector i(bst);
     //needle = bst.search(30);
     //EXPECT_EQ(needle.second -> get_right() -> get_key(), 38);
+}
+
+TEST_F(BSTTestRemove, delete_head)
+{
 
     //4. special case - remove of head node
     //bst.remove(50);
@@ -115,6 +134,7 @@ TEST_F(BSTTestRemove, remove)
     //;
 }
 */
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

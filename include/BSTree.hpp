@@ -93,6 +93,9 @@ public:
                         result -> get_parent() -> replace_right(result -> get_left());
                         successor = result -> get_parent() -> get_right();
                 }
+
+                //set parent for all cases
+                successor -> set_parent(result -> get_parent());
             }
             //right subtree
             if(result -> get_left() == nullptr && result -> get_right() != nullptr)
@@ -113,6 +116,9 @@ public:
                     result -> get_parent() -> replace_right(result -> get_right());
                     successor = result -> get_parent() -> get_right();
                 }
+
+                //set parent for all cases
+                successor -> set_parent(result -> get_parent());
             }
 
             //case 3. deletion node has two subtrees
@@ -167,7 +173,7 @@ public:
                     replacement -> get_parent() -> null_left();
                     successor = replacement;
                 }
-
+                successor -> set_parent(result -> get_parent());
                 to_delete -> null_left();
                 to_delete -> null_right();
                 result.reset();

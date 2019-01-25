@@ -113,20 +113,56 @@ TEST_F(BSTTestRemove, delete_head)
     EXPECT_EQ(head -> get_right() -> get_key(), 9);
 }
 
-TEST(RBTreeTest, insertion)
+class RBTreeTest : public ::testing::Test
 {
-    RBTree<int> rbt;
-    std::vector<int> data = {10,7,11,15,14};
-    for ( auto const& d : data)
+protected:
+    void SetUp() override
     {
-        rbt.insert(d);
+        std::vector<int> data = {10,7,3};
+        for(const auto& d : data)
+        {
+            rbt.insert(d);
+        }
+
     }
+    RBTree<int> rbt;
+};
+
+
+
+TEST_F(RBTreeTest, insertion_recolor)
+{
+    //TreeInspector i(rbt);
+
+
     auto head = rbt.get_head();
-    std::cout <<1 <<std::endl;
+
+    EXPECT_EQ(head -> is_red(), false);
+    EXPECT_EQ(head -> get_right() -> is_red(), false);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+
+}
+
+TEST_F(RBTreeTest, insertion_right_left)
+{
+    rbt.insert(15);
+    rbt.insert(14);
+
+    auto head = rbt.get_head();
     EXPECT_EQ(head -> get_right() -> get_key(), 14);
-    std::cout << 2 << std::endl;
     EXPECT_EQ(head -> get_right() -> is_red(), false);
 }
+
+TEST_F(RBTreeTest, insertion_right_right)
+{
+    rbt.insert(15);
+    rbt.insert(16);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_right() -> get_key(), 14);
+    EXPECT_EQ(head -> get_right() -> is_red(), false);
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

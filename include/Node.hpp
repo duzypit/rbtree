@@ -96,5 +96,11 @@ public:
     {
         _parent = new_parent;
     }
+
+    bool is_leaf() const
+    {
+        return (this -> _left == nullptr && this -> _right == nullptr) ? true : false;
+
+    }
 };
 #endif

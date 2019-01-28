@@ -163,6 +163,101 @@ TEST_F(RBTreeTest, insertion_right_right)
     EXPECT_EQ(head -> get_right() -> is_red(), false);
 }
 
+TEST_F(RBTreeTest, insertion_left_right)
+{
+    rbt.insert(1);
+    rbt.insert(2);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 2);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+
+}
+
+TEST_F(RBTreeTest, insertion_left_left)
+{
+    rbt.insert(1);
+    rbt.insert(0);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 3);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+}
+
+class RBTreeDelete : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        std::vector<int> data = {30, 20, 40, 50};
+        for(const auto& d : data)
+        {
+            rbt.insert(d);
+        }
+
+    }
+    RBTree<int> rbt;
+};
+
+TEST_F(RBTreeDelete, simple_u_or_v_is_red)
+{
+    rbt.insert(10);
+    rbt.remove(20);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 10);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+}
+/**/
+TEST_F(RBTreeDelete, both_black_left_left)
+{
+/*
+    rbt.insert(10);
+    rbt.remove(20);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 10);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+*/
+}
+
+TEST_F(RBTreeDelete, both_black_left_right)
+{
+/*    rbt.insert(10);
+    rbt.remove(20);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 10);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+*/
+}
+
+TEST_F(RBTreeDelete, both_black_right_left)
+{
+    rbt.insert(35);
+    rbt.remove(50);
+    rbt.remove(20);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 30);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+    EXPECT_EQ(head -> get_left() -> is_leaf(), true);
+
+    EXPECT_EQ(head -> get_right() -> get_key(), 40);
+    EXPECT_EQ(head -> get_right() -> is_red(), false);
+    EXPECT_EQ(head -> get_right() -> is_leaf(), true);
+
+}
+
+TEST_F(RBTreeDelete, both_black_right_right)
+{
+    rbt.insert(35);
+    rbt.remove(20);
+
+    auto head = rbt.get_head();
+    EXPECT_EQ(head -> get_left() -> get_key(), 10);
+    EXPECT_EQ(head -> get_left() -> is_red(), false);
+}
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

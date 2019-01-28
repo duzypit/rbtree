@@ -378,16 +378,17 @@ public:
 
         //Standard bst delete
         //but check if successor is double black
-        auto result = this -> search(key);
+        std::shared_ptr<Node<T>> result = nullptr;
+        result = this -> search(key);
 
         //we have a result here
-        if (result.first != nullptr && result.second)
+        if (result != nullptr)
         {
-            current_is_red = result.second -> is_red();
+            current_is_red = result -> is_red();
 
             auto successor = BSTree<T>::remove(key);
-            if((successor.first != nullptr && !successor -> is_red()) ||
-                (successor.first != nullptr && successor.second == nullptr))
+            if((successor -> get_parent() != nullptr && !successor -> is_red()) ||
+                (successor -> get_parent() != nullptr && successor == nullptr))
             {
                 successor_is_red = false;
             }
@@ -401,26 +402,26 @@ public:
     }
 
 
-    void remove_double_black(std::pair<std::shared_ptr<Node<T>>, std::shared_ptr<Node<T>>> successor)
+    void remove_double_black(std::shared_ptr<Node<T>> successor)
     {
         //
         //3.2. current is double black and it is not root
-        if(successor.second != this -> _head)
+        if(successor != this -> _head)
         {
         //
         //3.2 current is right child
-        if(!successor.first -> is_left_child(successor.second))
+        if(!successor -> get_parent() -> is_left_child(successor))
         {
-            if(successor.first -> get_left() != nullptr) //sibling is left child
+            if(successor -> get_parent() -> get_left() != nullptr) //sibling is left child
             {
-                auto sibling = successor.first -> get_left();
+                auto sibling = successor -> get_parent() -> get_left();
                 if(sibling -> get_left() != nullptr && !sibling -> get_left() -> is_red()) //left left case
                 {
-                    successor.first  -> replace_left(sibling -> get_right());
-                    sibling -> set_parent(successor.first -> get_parent());
-                    successor.first -> set_parent(sibling);
-                    sibling -> replace_right(successor.first);
-                    if(successor.first == this -> _head)
+                    successor -> get_parent()  -> replace_left(sibling -> get_right());
+                    sibling -> set_parent(successor -> get_parent() -> get_parent());
+                    successor -> get_parent() -> set_parent(sibling);
+                    sibling -> replace_right(successor -> get_parent());
+                    if(successor -> get_parent() == this -> _head)
                     {
                         this -> _head = sibling;
                     }
@@ -428,11 +429,11 @@ public:
 
                 } else if(sibling -> get_right() != nullptr && !sibling -> get_right -> is_red()) //left right case
                 {
-                    successor.first -> replace_left(sibling -> get_right());
-                    sibling -> set_parent(successor.first -> get_parent());
-                    successor.first -> set_parent(sibling);
-                    sibling -> replace_right(successor.first);
-                    if(successor.first == this -> _head)
+                    successor -> get_parent() -> replace_left(sibling -> get_right());
+                    sibling -> set_parent(successor -> get_parent() -> get_parent());
+                    successor -> get_parent() -> set_parent(sibling);
+                    sibling -> replace_right(successor -> get_parent());
+                    if(successor -> get_parent() == this -> _head)
                     {
                         this -> _head = sibling;
                     }
@@ -440,16 +441,16 @@ public:
                 }
             }//sibling exists
         } else //current is left child
-            if(successor.first -> get_right() != nullptr) //sibling is right child
+            if(successor -> get_parent() -> get_right() != nullptr) //sibling is right child
             {
-                auto sibling = successor.first -> get_right();
+                auto sibling = successor -> get_parent() -> get_right();
                 if(sibling -> get_right() != nullptr && !sibling -> get_right() -> is_red()) //right right case
                 {
-                    successor.first -> replace_right(sibling -> get_right());
-                    sibling -> set_parent(successor.first -> get_parent());
-                    successor.first -> set_parent(sibling);
-                    sibling -> replace_left(successor.first);
-                    if(successor.first == this -> _head)
+                    successor -> get_parent() -> replace_right(sibling -> get_right());
+                    sibling -> set_parent(successor -> get_parent() -> get_parent());
+                    successor -> get_parent() -> set_parent(sibling);
+                    sibling -> replace_left(successor -> get_parent());
+                    if(successor -> get_parent() == this -> _head)
                     {
                         this -> _head = sibling;
                     }
